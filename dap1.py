@@ -4,7 +4,7 @@ def linear_search(arr, target):
             return i  # Return the index where the target is found
     return -1  # Return -1 if the target is not found
 
-# Taking input from the user
+#madhu
 arr = list(map(int, input("Enter the elements of the list separated by space: ").split()))
 target = int(input("Enter the element to search for: "))
 

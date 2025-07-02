@@ -1,0 +1,212 @@
+<header class="bg-white shadow-md fixed top-0 left-0 w-full z-10">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-600 hover:text-blue-600">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+            <a href="/" class="flex items-center">
+                <img src="/static/images/baby2.png" alt="Care-One Logo" class="h-12 w-12">
+                <h1 class="text-xl font-bold text-gray-800 ml-2">CARE-ONE</h1>
+            </a>
+        </div>
+
+        <nav class="hidden md:flex items-center space-x-8">
+            <a href="/" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Home</a>
+            <a href="book" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Mother Card Request</a>
+            <a href="pregnancy" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Pregnancy</a>
+            <a href="feeding" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Feeding</a>
+            <a href="vaccine" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Vaccine</a>
+            <a href="mnutrition" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Nutrition</a>
+            
+            <div class="relative group flex items-center">
+                <a href="program" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Schemes</a>
+                <div class="absolute left-0 top-full hidden group-hover:block bg-white shadow-lg rounded-md p-2 min-w-[160px]">
+                    <a href="PG1" class="block px-4 py-2 hover:bg-gray-100">PMMVY</a>
+                    <a href="PG2" class="block px-4 py-2 hover:bg-gray-100">JSSK</a>
+                    <a href="PG3" class="block px-4 py-2 hover:bg-gray-100">JSY</a>
+                    <a href="PG4" class="block px-4 py-2 hover:bg-gray-100">PMSMA</a>
+                </div>
+            </div>
+            <div class="relative group flex items-center">
+                <a href="#" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Tools</a>
+                <div class="absolute left-0 top-full hidden group-hover:block bg-white shadow-lg rounded-md p-2 min-w-[160px]">
+                    <a href="about" class="block px-4 py-2 hover:bg-gray-100">About</a>
+                    <a href="duedate" class="block px-4 py-2 hover:bg-gray-100">Due Date</a>
+                    <!-- <a href="tutorials" class="block px-4 py-2 hover:bg-gray-100">Tutorials</a> -->
+                </div>
+            </div>
+            {% if "user" not in request.session %}
+            <div class="relative group flex items-center border border-blue-500 rounded-lg">
+                <a href="{{ url_for('login_page') }}" class="px-4 py-2 text-gray-600 font-medium border-transparent hover:text-white hover:bg-blue-500 hover:border-blue-700 transition duration-300 rounded-lg">
+                    Login
+                </a>
+            </div>
+            {% endif %}
+        </nav>
+        <!-- Right: User Icon -->
+        {% if user %}
+        <button id="user-icon" class="text-gray-700 hover:text-blue-600 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c2.21 0 4-1.79 4-4S14.21 3 12 3 8 4.79 8 7s1.79 4 4 4zm0 2c-4.41 0-8 2.69-8 6v2h16v-2c0-3.31-3.59-6-8-6z" />
+            </svg>
+        </button>
+        
+        {% endif %}
+    </div>
+</header>
+
+<!-- Overlay -->
+<div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden"></div>
+
+<!-- Sliding User Panel -->
+<!-- Sliding User Panel -->
+<div id="user-panel" class="fixed top-0 right-0 w-64 z-50 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out p-5 border rounded-lg">
+    <div class="flex justify-between items-center border-b pb-3">
+        <span class="text-lg font-semibold text-gray-800 flex items-center">
+            <svg class="h-7 w-7 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c2.21 0 4-1.79 4-4S14.21 3 12 3 8 4.79 8 7s1.79 4 4 4zm0 2c-4.41 0-8 2.69-8 6v2h16v-2c0-3.31-3.59-6-8-6z" />
+            </svg>
+            Welcome, {{ user }}
+        </span>
+        <button id="close-panel" class="text-gray-500 hover:text-red-600 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    <div class="flex flex-col space-y-4 mt-4">
+        <a href="update" class="flex items-center text-gray-700 hover:text-blue-700 hover:bg-blue-100 px-3 py-2 rounded-md transition duration-200">
+            <svg class="h-6 w-6 text-gray-600 mr-3 transition duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9m-9 0H3m9-14a4 4 0 1 1 8 0 4 4 0 0 1-8 0zm4 6v6"></path>
+            </svg>
+            <span class="font-medium">Profile</span>
+        </a>
+        <a href="user_report" class="flex items-center text-gray-700 hover:text-blue-700 hover:bg-blue-100 px-3 py-2 rounded-md transition duration-200">
+            <svg class="h-6 w-6 text-gray-600 mr-3 transition duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4zM8 12h8m-4 4V8"></path>
+            </svg>
+            <span class="font-medium">Report</span>
+        </a>
+        <a href="vaccine_history" class="flex items-center text-gray-700 hover:text-blue-700 hover:bg-blue-100 px-3 py-2 rounded-md transition duration-200">
+            <svg class="h-6 w-6 text-gray-600 mr-3 transition duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4zM8 12h8m-4 4V8"></path>
+            </svg>
+            <span class="font-medium">Vaccine History</span>
+        </a>
+        <a href="nutrition_history" class="flex items-center text-gray-700 hover:text-blue-700 hover:bg-blue-100 px-3 py-2 rounded-md transition duration-200">
+            <svg class="h-6 w-6 text-gray-600 mr-3 transition duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4zM8 12h8m-4 4V8"></path>
+            </svg>
+            <span class="font-medium">Nutrition History</span>
+        </a>
+        <a href="checkup_history" class="flex items-center text-gray-700 hover:text-blue-700 hover:bg-blue-100 px-3 py-2 rounded-md transition duration-200">
+            <svg class="h-6 w-6 text-gray-600 mr-3 transition duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4zM8 12h8m-4 4V8"></path>
+            </svg>
+            <span class="font-medium">Checkup History</span>
+        </a>
+        <a href="#" id="logout-btn" class="flex items-center text-red-600 hover:text-white bg-red-100 hover:bg-red-600 px-3 py-2 rounded-md font-semibold transition duration-200">
+            <svg class="h-6 w-6 text-red-600 mr-3 transition duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            <span>Logout</span>
+        </a>
+    </div>
+</div>
+
+<!-- Mobile Navigation Menu -->
+<div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-white shadow-lg md:hidden z-50">
+    <nav class="flex flex-col space-y-2 p-4">
+        <a href="/" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Home</a>
+        <a href="feeding" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Feeding</a>
+    
+        <!-- Mother Dropdown -->
+        <div class="relative group">
+            <a href="pregnancy" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Mother</a>
+            <div class="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg hidden group-hover:block z-50">
+                <a href="pregnancy" class="block px-4 py-2 text-gray-600 hover:bg-blue-100">Pregnancy</a>
+                <a href="nutrition" class="block px-4 py-2 text-gray-600 hover:bg-blue-100">Nutrition</a>
+                <a href="health" class="block px-4 py-2 text-gray-600 hover:bg-blue-100">Health</a>
+            </div>
+        </div>
+        <!-- Vaccine Dropdown -->
+        <div class="relative group">
+            <a href="vaccine" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Vaccines</a>
+        </div>
+
+        <!-- Tools Dropdown -->
+        <div class="relative group">
+            <a href="#" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Tools</a>
+            <div class="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg hidden group-hover:block z-50">
+                <a href="about" class="block px-4 py-2 text-gray-600 hover:bg-blue-100">About</a>
+                <a href="due-date" class="block px-4 py-2 text-gray-600 hover:bg-blue-100">Due Date</a>
+                <a href="tutorials" class="block px-4 py-2 text-gray-600 hover:bg-blue-100">Tutorials</a>
+            </div>
+        </div>
+    
+        <a href="program" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600">Schemes</a>
+    
+        {% if "user" not in request.session %}
+        <a href="{{ url_for('login_page') }}" class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600 border border-blue-500 rounded-lg text-center">
+            Login
+        </a>
+        {% endif %}
+    </nav>
+    
+</div>
+
+<script>
+document.getElementById('mobile-menu-button').addEventListener('click', function() {
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+});
+</script>
+<!-- JavaScript -->
+<script>
+const userIcon = document.getElementById('user-icon');
+const userPanel = document.getElementById('user-panel');
+const closePanel = document.getElementById('close-panel');
+const overlay = document.getElementById('overlay');
+
+// Open User Panel
+userIcon?.addEventListener('click', () => {
+    userPanel.classList.remove('translate-x-full');
+    overlay.classList.remove('hidden');
+});
+
+// Close Panel on Close Button
+closePanel?.addEventListener('click', () => {
+    userPanel.classList.add('translate-x-full');
+    overlay.classList.add('hidden');
+});
+
+// Close Panel when Clicking Outside
+overlay?.addEventListener('click', () => {
+    userPanel.classList.add('translate-x-full');
+    overlay.classList.add('hidden');
+});
+
+// Logout functionality
+document.getElementById('logout-btn')?.addEventListener('click', async () => {
+    const response = await fetch('/logout', { method: 'POST' });
+    if (response.ok) {
+        alert('Logged out successfully!');
+        location.reload();
+    } else {
+        alert('Failed to logout. Please try again.');
+    }
+});
+
+// Mobile Menu Toggle
+document.getElementById('mobile-menu-button')?.addEventListener('click', () => {
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+});
+</script>
+
+<script>
+document.getElementById('mobile-menu-button').addEventListener('click', function() {
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+});
+</script>

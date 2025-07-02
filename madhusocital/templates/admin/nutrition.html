@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareOne - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function closeSidebar(event) {
+            let sidebar = document.getElementById('sidebar');
+            if (!sidebar.contains(event.target) && !document.getElementById('menu-toggle-btn').contains(event.target)) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
+        document.addEventListener('click', closeSidebar);
+
+        function confirmLogout() {
+            if (confirm("Are you sure you want to logout?")) {
+                window.location.href = "/admin/logout";
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-blue-900 text-white p-5 fixed h-full transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0">
+            <h1 class="text-2xl font-bold mb-6">CareOne</h1>
+            <nav>
+                <a href="dashboard" class="block py-2 px-4 hover:bg-blue-700 rounded">Dashboard</a>
+                <a href="add_staff" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Add Staff</a>
+                <a href="vaccines" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Vaccine Updates</a>
+                <a href="mother" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Mother Card</a>
+                <a href="nutrition" class="block py-2 px-4 bg-blue-700 rounded mt-2">Nutritions</a>
+            </nav>
+        </aside>
+        
+
+        
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col md:ml-64">
+            <!-- Header Section -->
+            <header class="bg-white shadow p-4 flex justify-between items-center">
+                <button id="menu-toggle-btn" class="md:hidden text-blue-900 focus:outline-none" onclick="toggleSidebar()">
+                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="9" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="11" y2="18"></line>
+                    </svg>
+                </button>
+                <h2 class="text-2xl font-semibold">Dashboard</h2>
+                <div class="flex items-center space-x-4">
+                    <input type="text" placeholder="Search..." class="p-2 border rounded w-1/3">
+                    <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        Logout
+                    </button>
+                </div>
+            </header>
+            <div class="container mx-auto p-6">
+                <div class="overflow-x-auto bg-white shadow-md rounded-lg border border-gray-200">
+                    <table class="w-full border-collapse">
+                        <thead id="tableHeader" class="bg-blue-500 text-white text-sm font-semibold">
+                            <tr>
+                                <th class="p-3 text-left">Staff Name</th>
+                                <th class="p-3 text-left">Center Name</th>
+                                <th class="p-3 text-left">Request Type</th>
+                                <th class="p-3 text-left">Item Name</th>
+                                <th class="p-3 text-left">Quantity</th>
+                                <th class="p-3 text-left">Status</th>
+                                <th class="p-3 text-left">Update Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestTable" class="text-gray-700 text-sm">
+                            <tr>
+                                <td colspan="7" class="p-4 text-center text-gray-500">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <script>
+                async function fetchRequests() {
+                    try {
+                        const response = await fetch("http://127.0.0.1:8000/requests_list");
+                        let data = await response.json();
+                
+                        if (!data.length) {
+                            document.getElementById("requestTable").innerHTML = 
+                                `<tr><td colspan="7" class="p-4 text-center text-gray-500">No requests found</td></tr>`;
+                            return;
+                        }
+                
+                        // Filter only vaccine requests
+                        data = data.filter(req => req.request_type === "Nutrition");
+                
+                        // Sort so 'Pending' requests appear first
+                        data.sort((a, b) => (a.request_status === "Pending" ? -1 : 1));
+                
+                        if (!data.length) {
+                            document.getElementById("requestTable").innerHTML = 
+                                `<tr><td colspan="7" class="p-4 text-center text-gray-500">No vaccine requests found</td></tr>`;
+                            return;
+                        }
+                
+                        // Generate Table Rows
+                        let tableBody = data.map(req => {
+                            let dropdown = `
+                                <select class="px-2 py-1 border rounded" onchange="updateStatus(${req.request_id}, this.value)">
+                                    <option value="Pending" ${req.request_status === "Pending" ? "selected" : ""}>Pending</option>
+                                    <option value="Approved" ${req.request_status === "Approved" ? "selected" : ""}>Approved</option>
+                                    <option value="Rejected" ${req.request_status === "Rejected" ? "selected" : ""}>Rejected</option>
+                                </select>`;
+                            
+                            return `
+                                <tr class="border-b hover:bg-gray-100">
+                                    <td class="p-3">${req.staff_name}</td>
+                                    <td class="p-3">${req.center_name}</td>
+                                    <td class="p-3">${req.request_type}</td>
+                                    <td class="p-3">${req.item_name}</td>
+                                    <td class="p-3">${req.quantity} ${req.unit}</td>
+                                    <td class="p-3 font-semibold ${req.request_status === 'Pending' ? 'text-orange-500' : req.request_status === 'Approved' ? 'text-green-600' : 'text-red-500'}">
+                                        ${req.request_status}
+                                    </td>
+                                    <td class="p-3">${dropdown}</td>
+                                </tr>`;
+                        }).join("");
+                
+                        document.getElementById("requestTable").innerHTML = tableBody;
+                
+                    } catch (error) {
+                        console.error("Error fetching requests:", error);
+                    }
+                }
+                
+                fetchRequests();
+                
+
+                async function updateStatus(request_id, new_status) {
+                    try {
+                        const response = await fetch(`http://127.0.0.1:8000/update_status/${request_id}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ request_status: new_status }),
+                        });
+                
+                        const result = await response.json();
+                
+                        if (response.ok) {
+                            alert("✅ Status updated successfully!");
+                            fetchRequests(); // Refresh table after update
+                        } else {
+                            alert("❌ Error updating status: " + result.detail);
+                        }
+                    } catch (error) {
+                        alert("❌ Failed to update status. Please try again.");
+                        console.error("Request error:", error);
+                    }
+                }
+                
+            </script>
+            
+            
+            <div class="max-w-6xl mx-auto grid grid-cols-2 gap-6 p-6">
+                <!-- Form Section -->
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-300">
+                    <h2 class="text-2xl font-bold text-blue-900 text-center mb-4 uppercase tracking-wide">Add Nutrition</h2>
+            
+                    <form id="nutritionForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700">Nutrition Name</label>
+                            <input type="text" id="nutrition_name" placeholder="E.g., Rice, Wheat, Milk Powder" class="w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700" required>
+                        </div>
+                    
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700">Quantity</label>
+                                <input type="text" id="quantity" placeholder="E.g., 5, 10, 20" class="w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700" required>
+                            </div>
+                    
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700">Unit</label>
+                                <input type="text" id="unit" placeholder="E.g., kg, packets, liters" class="w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700" required>
+                            </div>
+                        </div>
+                    
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700">Nutritional Value</label>
+                            <textarea id="nutritional_value" placeholder="E.g., 200 kcal, 10g protein per 100g" class="w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700" required></textarea>
+                        </div>
+                    
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700">Distribution Date</label>
+                            <input type="date" id="distribution_date" class="w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700" required>
+                        </div>
+                    
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700">Anganwadi Center</label>
+                            <input type="text" id="anganwadi_center" placeholder="E.g., Center Name, Village Name" class="w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700" required>
+                        </div>
+                    
+                        <button type="submit" class="w-full bg-blue-800 text-white p-2 rounded-md hover:bg-blue-900 transition duration-200 font-semibold">
+                            Submit
+                        </button>
+                    </form>
+                    
+            
+                    <p id="responseMessage" class="mt-4 text-center text-green-700 hidden"></p>
+                </div>
+            
+                <!-- List Section -->
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-300">
+                    <h2 class="text-2xl font-bold text-blue-900 text-center mb-4 uppercase tracking-wide">Nutrition List</h2>
+                    
+                    <div id="nutritionList" class="grid grid-cols-1 gap-4" style="height: 30pc; overflow-y: auto;">
+                        <!-- Nutrition records will be inserted here dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            
+            <script>
+                document.getElementById("nutritionForm").addEventListener("submit", async function (event) {
+                    event.preventDefault(); // Prevent default form submission
+            
+                    // Get form values
+                    const nutrition_name = document.getElementById("nutrition_name").value;
+                    const quantity = document.getElementById("quantity").value;
+                    const unit = document.getElementById("unit").value;
+                    const nutritional_value = document.getElementById("nutritional_value").value;
+                    const distribution_date = document.getElementById("distribution_date").value;
+                    const anganwadi_center = document.getElementById("anganwadi_center").value;
+            
+                    // Prepare the data object
+                    const formData = {
+                        nutrition_name,
+                        quantity,
+                        unit,
+                        nutritional_value,
+                        distribution_date,
+                        anganwadi_center
+                    };
+            
+                    try {
+                        const response = await fetch("http://127.0.0.1:8000/admin/add-nutrition", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(formData)
+                        });
+            
+                        const result = await response.json();
+            
+                        if (response.ok) {
+                            document.getElementById("responseMessage").textContent = "Nutrition record added successfully!";
+                            document.getElementById("responseMessage").classList.remove("hidden");
+                            document.getElementById("responseMessage").classList.add("text-green-600");
+            
+                            // Reset the form after successful submission
+                            document.getElementById("nutritionForm").reset();
+                        } else {
+                            throw new Error(result.detail || "Failed to add nutrition data");
+                        }
+                    } catch (error) {
+                        document.getElementById("responseMessage").textContent = error.message;
+                        document.getElementById("responseMessage").classList.remove("hidden");
+                        document.getElementById("responseMessage").classList.add("text-red-600");
+                    }
+                });
+                
+
+                async function fetchNutritionData() {
+                    try {
+                        const response = await fetch("http://127.0.0.1:8000/admin/get-nutrition");
+                        const data = await response.json();
+                
+                        console.log("Fetched Nutrition Data:", data); // Debugging
+                
+                        const nutritionList = document.getElementById("nutritionList");
+                        nutritionList.innerHTML = ""; // Clear previous content
+                
+                        if (!data.nutrition || data.nutrition.length === 0) {
+                            nutritionList.innerHTML = "<p class='text-gray-600 text-center'>No nutrition records found.</p>";
+                            return;
+                        }
+                
+                        data.nutrition.forEach((item) => {
+                            console.log("Item Data:", item); // Log each record to check properties
+                
+                            const nutritionItem = document.createElement("div");
+                            nutritionItem.classList.add("p-4", "border", "border-gray-300", "rounded-lg", "shadow-sm");
+                
+                            nutritionItem.innerHTML = `
+                                <h3 class="text-lg font-semibold text-gray-800">${item.nutrition_name || "N/A"}</h3>
+                                <p class="text-gray-600"><strong>Quantity:</strong> ${item.quantity || "N/A"} ${item.unit || ""}</p>
+                                <p class="text-gray-600"><strong>Nutritional Value:</strong> ${item.nutritional_value || "N/A"}</p>
+                                <p class="text-gray-600"><strong>Distribution Date:</strong> ${item.distribution_date || "N/A"}</p>
+                                <p class="text-gray-600"><strong>Anganwadi Center:</strong> ${item.anganwadi_center || "N/A"}</p>
+                                <div class="mt-2 flex gap-2">
+                                    <button class="bg-blue-500 text-white px-3 py-1 rounded update-btn" data-id="${item.nutrition_id}">Update</button>
+                                    <button class="bg-red-500 text-white px-3 py-1 rounded delete-btn" data-id="${item.nutrition_id}">Delete</button>
+                                </div>
+                            `;
+                
+                            nutritionList.appendChild(nutritionItem);
+                        });
+                
+                        // Attach event listeners to update and delete buttons
+                        document.querySelectorAll(".update-btn").forEach((button) => {
+                            button.addEventListener("click", (event) => {
+                                const nutritionId = event.target.getAttribute("data-id");
+                                updateNutrition(nutritionId);
+                            });
+                        });
+                
+                        document.querySelectorAll(".delete-btn").forEach((button) => {
+                            button.addEventListener("click", async (event) => {
+                                const nutritionId = event.target.getAttribute("data-id");
+                                await deleteNutrition(nutritionId);
+                            });
+                        });
+                
+                    } catch (error) {
+                        console.error("Error fetching nutrition data:", error);
+                    }
+                }
+                
+                // Function to handle update
+                function updateNutrition(nutritionId) {
+                    alert(`Update functionality for Nutrition ID: ${nutritionId} not yet implemented.`);
+                    // You can open a modal with a form to edit the nutrition record
+                }
+                
+                // Function to handle delete
+                async function deleteNutrition(nutritionId) {
+                    if (!confirm("Are you sure you want to delete this nutrition record?")) return;
+                
+                    try {
+                        const response = await fetch(`http://127.0.0.1:8000/admin/delete-nutrition/${nutritionId}`, {
+                            method: "DELETE",
+                        });
+                
+                        if (response.ok) {
+                            alert("Nutrition record deleted successfully.");
+                            fetchNutritionData(); // Refresh the list
+                        } else {
+                            alert("Failed to delete nutrition record.");
+                        }
+                    } catch (error) {
+                        console.error("Error deleting nutrition record:", error);
+                    }
+                }
+                
+                // Fetch data when the page loads
+                document.addEventListener("DOMContentLoaded", fetchNutritionData);
+                
+
+                                // Function to open update modal
+                function updateNutrition(nutritionId) {
+                    // Find the nutrition item from the existing data
+                    const item = document.querySelector(`[data-id="${nutritionId}"]`).parentNode.parentNode;
+                    
+                    // Extract values from the displayed content
+                    const name = item.querySelector("h3").innerText;
+                    const quantity = item.querySelector("p:nth-child(2)").innerText.split(": ")[1].split(" ")[0];
+                    const unit = item.querySelector("p:nth-child(2)").innerText.split(": ")[1].split(" ")[1];
+                    const nutritionalValue = item.querySelector("p:nth-child(3)").innerText.split(": ")[1];
+                    const distributionDate = item.querySelector("p:nth-child(4)").innerText.split(": ")[1];
+                    const anganwadiCenter = item.querySelector("p:nth-child(5)").innerText.split(": ")[1];
+
+                    // Show a form inside a modal
+                    document.body.insertAdjacentHTML("beforeend", `
+                        <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                                <h2 class="text-xl font-bold mb-4">Update Nutrition</h2>
+                                <label class="block mb-2">Name:</label>
+                                <input id="updateName" type="text" value="${name}" class="w-full p-2 border rounded mb-2">
+                                <label class="block mb-2">Quantity:</label>
+                                <input id="updateQuantity" type="text" value="${quantity}" class="w-full p-2 border rounded mb-2">
+                                <label class="block mb-2">Unit:</label>
+                                <input id="updateUnit" type="text" value="${unit}" class="w-full p-2 border rounded mb-2">
+                                <label class="block mb-2">Nutritional Value:</label>
+                                <input id="updateNutritionalValue" type="text" value="${nutritionalValue}" class="w-full p-2 border rounded mb-2">
+                                <label class="block mb-2">Distribution Date:</label>
+                                <input id="updateDate" type="date" value="${distributionDate}" class="w-full p-2 border rounded mb-2">
+                                <label class="block mb-2">Anganwadi Center:</label>
+                                <input id="updateCenter" type="text" value="${anganwadiCenter}" class="w-full p-2 border rounded mb-4">
+                                <div class="flex justify-between">
+                                    <button onclick="saveUpdatedNutrition(${nutritionId})" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+                                    <button onclick="document.getElementById('updateModal').remove()" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                // Function to send update request
+                async function saveUpdatedNutrition(nutritionId) {
+                    const updatedData = {
+                        nutrition_name: document.getElementById("updateName").value,
+                        quantity: document.getElementById("updateQuantity").value,
+                        unit: document.getElementById("updateUnit").value,
+                        nutritional_value: document.getElementById("updateNutritionalValue").value,
+                        distribution_date: document.getElementById("updateDate").value,
+                        anganwadi_center: document.getElementById("updateCenter").value,
+                    };
+
+                    try {
+                        const response = await fetch(`http://127.0.0.1:8000/admin/update-nutrition/${nutritionId}`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(updatedData),
+                        });
+
+                        if (response.ok) {
+                            alert("Nutrition record updated successfully.");
+                            document.getElementById("updateModal").remove();
+                            fetchNutritionData(); // Refresh data
+                        } else {
+                            alert("Failed to update nutrition record.");
+                        }
+                    } catch (error) {
+                        console.error("Error updating nutrition record:", error);
+                    }
+                }
+
+            </script>
+            
+    </div>
+</body>
+</html>

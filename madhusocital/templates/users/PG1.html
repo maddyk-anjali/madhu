@@ -1,0 +1,469 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Schemes for Pregnant Women</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+    <h1 class="text-4xl font-extrabold mb-8 text-center text-blue-600">Government Schemes for Pregnant Women</h1>
+    
+    <div class="w-full max-w-4xl bg-white shadow-2xl rounded-lg p-8 mb-6">
+        <h2 class="text-3xl font-bold mb-4 text-gray-800">Overview</h2>
+        <p class="text-gray-700 text-lg leading-relaxed">The Government of India has introduced multiple welfare schemes aimed at supporting pregnant women. These initiatives ensure financial assistance, medical checkups, institutional deliveries, and proper nutrition to reduce maternal and infant mortality rates.</p>
+    </div>
+    
+    <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="#" onclick="redirectTo('pmmvy')" class="bg-white shadow-lg rounded-lg p-6 cursor-pointer transform transition-transform hover:scale-105 hover:bg-blue-50 block">
+            <h2 class="text-2xl font-bold text-blue-600">Pradhan Mantri Matru Vandana Yojana (PMMVY)</h2>
+        </a>
+        <a href="#" onclick="redirectTo('jsy')" class="bg-white shadow-lg rounded-lg p-6 cursor-pointer transform transition-transform hover:scale-105 hover:bg-blue-50 block">
+            <h2 class="text-2xl font-bold text-blue-600">Janani Suraksha Yojana (JSY)</h2>
+        </a>
+        <a href="#" onclick="redirectTo('pmsma')" class="bg-white shadow-lg rounded-lg p-6 cursor-pointer transform transition-transform hover:scale-105 hover:bg-blue-50 block">
+            <h2 class="text-2xl font-bold text-blue-600">Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)</h2>
+        </a>
+        <a href="#" onclick="redirectTo('igmsy')" class="bg-white shadow-lg rounded-lg p-6 cursor-pointer transform transition-transform hover:scale-105 hover:bg-blue-50 block">
+            <h2 class="text-2xl font-bold text-blue-600">Indira Gandhi Matritva Sahyog Yojana (IGMSY)</h2>
+        </a>
+    </div>
+    
+    <div id="scheme-details" class="w-full max-w-4xl bg-white shadow-2xl rounded-lg p-8 mt-6 hidden">
+        <img id="scheme-image" src="" alt="Scheme Image" class="w-full h-80 object-cover rounded-md mb-6">
+        <h2 id="scheme-title" class="text-3xl font-bold mb-4 text-gray-800"></h2>
+        <p id="scheme-description" class="text-gray-700 text-lg leading-relaxed"></p>
+    </div>
+    
+    <script>
+        const schemes = {
+            pmmvy: {
+                title: "Pradhan Mantri Matru Vandana Yojana (PMMVY)",
+                href: "PG1.html",
+                description: "This scheme provides financial assistance of ₹5,000 in three installments to first-time mothers to ensure proper nutrition and maternal healthcare.",
+                image: "/app/static/images/pic1.jpg"
+            },
+            jsy: {
+                title: "Janani Suraksha Yojana (JSY)",
+                description: "Aims to reduce maternal mortality by promoting institutional deliveries with financial incentives. It focuses on improving access to skilled birth attendants.",
+                image: "https://via.placeholder.com/400"
+            },
+            pmsma: {
+                title: "Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)",
+                description: "Provides free antenatal checkups on the 9th of every month at government healthcare centers, ensuring timely medical supervision for pregnant women.",
+                image: "https://via.placeholder.com/400"
+            },
+            igmsy: {
+                title: "Indira Gandhi Matritva Sahyog Yojana (IGMSY)",
+                description: "A conditional cash transfer scheme for pregnant and lactating women to improve their health and nutrition. Women receive cash benefits to ensure better maternal care.",
+                image: "https://via.placeholder.com/400"
+            }
+        };
+        
+        function redirectTo(schemeKey) {
+            const scheme = schemes[schemeKey];
+            document.getElementById("scheme-title").innerText = scheme.title;
+            document.getElementById("scheme-description").innerText = scheme.description;
+            document.getElementById("scheme-image").src = scheme.image;
+            document.getElementById("scheme-details").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care-One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom dropdown styles */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 12rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .controls button {
+            margin-left: 10px;
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+        .controls button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .controls img {
+            width: 40px;
+            height: 40px;
+        }
+        /* Highlight currently read text */
+        .highlight {
+            background-color: yellow;
+            color: black;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+
+        /* For large screens, show dropdown on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* For mobile view, make dropdown appear when clicked */
+        .mobile-dropdown {
+            display: none;
+        }
+
+        .mobile-dropdown.active {
+            display: block;
+        }
+
+        /* Hide the desktop nav on mobile screens */
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+
+        /* Show mobile nav on smaller screens */
+        @media (max-width: 767px) {
+            .mobile-nav {
+                display: block;
+            }
+        }
+
+        /* Active link style */
+        .active-link {
+            color: #1E40AF;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* Shadow effect for the navigation bar */
+        .nav-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hover effects for nav links */
+        .nav-link:hover {
+            color: #1E40AF;
+            text-decoration: underline;
+        }
+         /* Sliding panel styles */
+         .user-panel {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Hidden initially */
+            width: 300px;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s ease-in-out;
+            z-index: 20;
+        }
+
+        .user-panel.open {
+            right: 0; /* Slide in */
+        }
+
+        .user-panel-header {
+            background: #1E40AF;
+            color: #ffffff;
+            padding: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .user-panel-content {
+            padding: 1rem;
+        }
+
+        .user-panel-content a {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            color: #1E40AF;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .user-panel-content a:hover {
+            background: #f1f5f9;
+        }
+
+        .close-btn {
+            background: #e5e7eb;
+            color: #1E40AF;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        /* #mad{
+            color: rgb(213, 223, 131);
+            text-decoration-line:underline;
+            
+        } */
+
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    {% include "users/nav.html" %}
+    <body class="bg-gray-50">
+        <!-- Navigation Bar -->
+        {% include "users/nav.html" %}
+    
+        <!-- Hero Section with Image -->
+        <div class="relative">
+            <img src="static\images\pic1.jpg" alt="Pradhan Mantri Matru Vandana Yojana (PMMVY)" class="w-full h-96 object-cover">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+             <!-- <h1 class="text-white text-4xl font-bold shadow-lg">Feeding Your Baby: A Complete Guide</h1> -->
+            </div>
+        </div>
+    
+        <section class="py-12 container mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Breastfeeding Section -->
+                <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                    <h2 class="text-2xl font-semibold text-blue-700">Introduction</h2>
+                    <p class="text-gray-700 mt-2"> 
+                        Under – nutrition continues to adversely affect majority of women in India.
+                        In India, every third woman is undernourished and every second woman is anaemic.
+                        An undernourished mother almost inevitably gives birth to a low birth weight baby.
+                        When poor nutrition starts in – utero, it extends throughout the life cycle since the changes are largely irreversible.
+                        Owing to economic and social distress many women continue to work to earn a living for their family right up to the last days of their pregnancy.
+                        Furthermore, they resume working soon after childbirth, even though their bodies might not permit it, thus preventing their bodies from fully recovering on one hand, and also impeding their ability to exclusively breastfeed their young infant in the first six months.
+                        Pradhan Mantri Matru Vandana Yojana (PMMVY) is a Maternity Benefit Programme that is implemented in all the districts of the country in accordance with the provision of the National Food Security Act, 2013.
+                </div>
+    
+                <!-- Tips for Feeding -->
+                <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-green-500">
+                    <h2 class="text-2xl font-semibold text-green-700">Objectives</h2>
+                    <ul class="list-disc ml-5 text-gray-700">
+                        <li>
+                            Providing partial compensation for the wage loss in terms of cash incentive s so that the woman can take adequate res t before and after delivery of the first living child.
+                            The cash incentive provided would lead to improved health seeking behaviour amongst the Pregnant Women and Lactating Mothers (PW& LM).
+                    </ul>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Why Use a Bottle? -->
+        <section class="py-12 bg-gray-100">
+            <div class="container mx-auto px-6 lg:px-12">
+                <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-red-500">
+                    <h2 class="text-2xl font-semibold text-red-700"> Target beneficiaries</h2>
+                    <p class="text-gray-700 mt-2">
+                       
+
+All Pregnant Women and Lactating Mothers, excluding PW&LM who are in regular employment with the Central Government or the State Governments or PSUs or those who are in receipt of similar benefits under any law for the time being in force.
+All eligible Pregnant Women and Lactating Mothers who have their pregnancy on or after 01.01.2017 for first child in family
+The date and stage of pregnancy for a beneficiary would be counted with respect to her LMP date as mentioned in the MCP card.
+                       </p>
+                </div>
+            </div>
+        </section>
+    
+        <!-- How to Bottle Feed -->
+        <section class="py-12">
+            <div class="container mx-auto px-6 lg:px-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-yellow-500">
+                        <h2 class="text-xl font-semibold text-yellow-700">Case of Miscarriage/Still Birth</h2>
+                        <ul class="list-disc ml-5 text-gray-700">
+                            <li>A beneficiary is eligible to receive benefits under the scheme only once.
+                                In case of miscarriage/still birth, the beneficiary would be eligible to claim the remaining instalment(s) in event of any future pregnancy.
+                                Thus, after receiving the 1st instalment, if the beneficiary has a miscarriage, she would only be eligible for receiving 2nd and 3rd instalment in event of future pregnancy subject to fulfilment of eligibility criterion and conditionalities of the scheme.
+                                Similarly, if the beneficiary has a miscarriage or still birth after receiving 1 st and 2nd instalments, she would only be eligible for receiving 3rd instalment in event of future pregnancy subject to fulfilment of eligibility criterion and conditionalities of the scheme.</li>
+                        </ul>
+                    </div>
+    
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-purple-500">
+                        <h2 class="text-xl font-semibold text-purple-700"> Benefits under PMMVY</h2>
+                        <p class="text-gray-700 mt-2">
+                           
+
+<li>Cash incentive of Rs 5000 in three instalments i.e. first instalment of Rs 1000/ – on early registration of pregnancy at the Anganwadi Centre (AWC) / approved Health facility as may be identified by the respective administering State / UT, second instalment of Rs 2000/ – after six months of pregnancy on receiving at least one ante-natal check-up (ANC) and third instalment of Rs 2000/ – after child birth is registered and the child has received the first cycle of BCG, OPV, DPT and Hepatitis – B, or its equivalent/ substitute.
+<li>The eligible beneficiaries would receive the incentive given under the Janani Suraksha Yojana (JSY) for Institutional delivery and the incentive received under JSY would be accounted towards maternity benefits so that on an average a woman gets Rs 6000 / – .</li>
+                        </p>
+                    </div>
+    
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-indigo-500">
+                        <h2 class="text-xl font-semibold text-indigo-700">  Need for special attention</h2>
+                        <p class="text-gray-700 mt-2">
+                          
+
+<li>Under-nutrition continues to adversely affect majority of women in India. </li>
+<li>In India, every third woman is undernourished and every second woman is anaemic.</li>
+<li>An undernourished mother almost inevitably gives birth to a low birth weight baby. When poor nutrition starts in-utero, it extends throughout the life cycle since the changes are largely irreversible.</li>
+<li>Owing to economic and social distress many women continue to work to earn a living for their family right up to the last days of their pregnancy.</li>
+<li>They resume working soon after childbirth, even though their bodies might not permit it, thus preventing their bodies from fully recovering on one hand, and also impeding their ability to exclusively breastfeed their young infant in the first six months.</li>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Extra Advice -->
+        <!-- <section class="py-12 bg-pink-50">
+            <div class="container mx-auto px-6 lg:px-12">
+                <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-pink-500">
+                    <h2 class="text-2xl font-semibold text-pink-700">Additional Tips for Baby Feeding</h2>
+                    <ul class="list-disc ml-5 text-gray-700">
+                        <li>Introduce new foods one at a time to check for allergies.</li>
+                        <li>Always hold your baby while bottle-feeding to build a bond.</li>
+                        <li>Encourage self-feeding when they are ready (around 8-10 months).</li>
+                        <li>Avoid adding cereal to bottles as it may cause choking.</li>
+                        <li>Ensure feeding times are calm and enjoyable.</li>
+                    </ul>
+                </div>
+            </div>
+        </section> -->
+    
+    <div class="controls">
+        <img src="https://img.icons8.com/ios-filled/50/000000/speaker.png" alt="Speaker Icon" id="speaker-icon">
+        <button id="play">Play</button>
+        <button id="pause" disabled>Pause</button>
+        <button id="resume" disabled>Resume</button>
+        <button id="stop" disabled>Stop</button>
+    </div>
+
+    <script>
+        const playButton = document.getElementById('play');
+        const pauseButton = document.getElementById('pause');
+        const resumeButton = document.getElementById('resume');
+        const stopButton = document.getElementById('stop');
+        const synth = window.speechSynthesis;
+
+        let utterance;
+        let currentElement = null;
+
+        // Function to highlight the currently spoken word
+        function highlightText(element) {
+            // Remove highlight from the previous element
+            if (currentElement) {
+                currentElement.classList.remove('highlight');
+            }
+
+            // Highlight the new element
+            currentElement = element;
+            if (currentElement) {
+                currentElement.classList.add('highlight');
+            }
+        }
+
+        // Function to split content into individual sentences for highlighting
+        function speakContent() {
+            const allText = document.querySelectorAll("h1, p"); // Target headings and paragraphs
+            const textArray = Array.from(allText); // Convert NodeList to Array
+            let currentIndex = 0;
+
+            function speakNext() {
+                if (currentIndex < textArray.length) {
+                    const element = textArray[currentIndex];
+                    highlightText(element); // Highlight the element
+                    utterance = new SpeechSynthesisUtterance(element.innerText);
+
+                    utterance.onend = () => {
+                        currentIndex++;
+                        speakNext();
+                    };
+
+                    synth.speak(utterance);
+                } else {
+                    highlightText(null); // Remove highlighting when finished
+                    resetControls();
+                }
+            }
+
+            speakNext();
+        }
+
+        function resetControls() {
+            playButton.disabled = false;
+            pauseButton.disabled = true;
+            resumeButton.disabled = true;
+            stopButton.disabled = true;
+        }
+
+        playButton.addEventListener('click', () => {
+            synth.cancel(); // Stop any ongoing speech
+            playButton.disabled = true;
+            pauseButton.disabled = false;
+            stopButton.disabled = false;
+            speakContent(); // Start reading content
+        });
+
+        pauseButton.addEventListener('click', () => {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                pauseButton.disabled = true;
+                resumeButton.disabled = false;
+            }
+        });
+
+        resumeButton.addEventListener('click', () => {
+            if (synth.paused) {
+                synth.resume();
+                pauseButton.disabled = false;
+                resumeButton.disabled = true;
+            }
+        });
+
+        stopButton.addEventListener('click', () => {
+            synth.cancel();
+            highlightText(null); // Remove highlight
+            resetControls();
+        });
+    </script>
+    {% include "users/footer.html" %}
+
+</body>
+</html>
+

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mother Card Registration</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#121212] text-white">
+    <!-- Navigation -->
+    {% include "anganwadi/nav.html" %}
+    <div class="max-w-5xl w-full bg-gray-900 p-6 rounded-lg shadow-xl animate-fadeIn m-auto">
+        <h2 class="text-3xl font-bold text-center mb-6 text-teal-400">Mother Card Registration</h2>
+    
+        
+        <!-- Search & Filter Section -->
+        <div class="flex flex-wrap gap-4 mb-4 justify-center">
+            <input type="text" id="searchQuery" placeholder="Search by Name or Phone" class="p-2 border rounded w-1/3 bg-gray-800 text-white shadow-sm">
+            <select id="statusFilter" class="p-2 border rounded bg-gray-800 text-white shadow-sm">
+                <option value="">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+            <button onclick="fetchData()" class="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition duration-300">Search</button>
+        </div>
+        
+        <!-- Data Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-900 border border-gray-700 shadow-lg rounded-lg">
+                <thead>
+                    <tr class="bg-gray-800 text-teal-400">
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Mother Name</th>
+                        <th class="border px-4 py-2">Phone</th>
+                        <th class="border px-4 py-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("statusFilter").addEventListener("change", fetchData);
+        
+        async function fetchData() {
+            const status = document.getElementById("statusFilter").value;
+            const query = document.getElementById("searchQuery").value.trim();
+            let url = "/api/check_status";
+            
+            const params = new URLSearchParams();
+            if (query) params.append("query", query);
+            if (status) params.append("status", status);
+            if (params.toString()) url += `?${params.toString()}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                renderTable(data.data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+        
+        function renderTable(data) {
+    const tableBody = document.getElementById("dataTable");
+    tableBody.innerHTML = "";
+
+    data.forEach(item => {
+        const isApproved = item.status === "Approved";
+        const buttonClass = isApproved 
+            ? "bg-green-500 text-white px-3 py-1 text-sm rounded hover:bg-green-600 transition duration-300" 
+            : "bg-gray-500 text-gray-300 px-3 py-1 text-sm rounded cursor-not-allowed opacity-50";
+
+        const button = `<a href="${isApproved ? `/updates_records?id=${item.id}` : '#'}" 
+                        class="${buttonClass}" ${isApproved ? "" : "onclick='return false;'"}>Generate Records</a>`;
+
+        const row = `<tr class='border border-gray-700 hover:bg-gray-800 transition duration-300'>
+            <td class='border px-4 py-2'>${item.id}</td>
+            <td class='border px-4 py-2'>${item.mother_name}</td>
+            <td class='border px-4 py-2'>${item.phone_number}</td>
+            <td class='border px-4 py-2 flex items-center gap-6'>
+                <span class='px-3 py-1 text-sm rounded text-white ${getStatusColor(item.status)}'>${item.status}</span>
+                ${button}
+            </td>
+        </tr>`;
+
+        tableBody.innerHTML += row;
+    });
+}
+
+
+        function getStatusColor(status) {
+            return status === "Pending" ? "bg-yellow-500" : status === "Approved" ? "bg-green-500" : "bg-red-500";
+        }
+
+        fetchData();  // Initial fetch
+    </script>
+</body>
+</html>

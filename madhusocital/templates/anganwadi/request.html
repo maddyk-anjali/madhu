@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mother Card Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#121212] text-white">
+
+    <!-- 🌟 Navbar -->
+    {% include "anganwadi/nav.html" %}
+
+    <div class="max-w-6xl mx-auto bg-gray-900 shadow-md rounded-lg p-6 mt-10">
+        <h2 class="text-3xl font-bold text-teal-400 mb-4 text-center">Mother Card Details</h2>
+
+        <!-- Filters Section -->
+        <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <input type="text" id="searchInput" placeholder="Search by Name or Aadhar..."
+                class="w-full md:w-1/2 p-2 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-teal-500">
+            
+            <select id="statusFilter" class="w-full md:w-1/4 p-2 rounded bg-gray-800 text-white border border-gray-600 focus:ring-2 focus:ring-teal-500">
+                <option value="all">All Status</option>
+                <option value="Visited">Visited</option>
+                <option value="Not visited">Not Visited</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-teal-600 text-white">
+                        <th class="border border-gray-700 p-3">ID</th>
+                        <th class="border border-gray-700 p-3">Full Name</th>
+                        <th class="border border-gray-700 p-3">Aadhar Number</th>
+                        <th class="border border-gray-700 p-3">Age</th>
+                        <th class="border border-gray-700 p-3">Address</th>
+                        <th class="border border-gray-700 p-3">Contact</th>
+                        <th class="border border-gray-700 p-3">Status</th>
+                        <th class="border border-gray-700 p-3">Update</th>
+                    </tr>
+                </thead>
+                <tbody id="motherTableBody" class="text-gray-300">
+                    <!-- Data will be inserted dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 🌟 Footer -->
+    <footer class="bg-[#121212] text-white text-center py-4 mt-10">
+        <p>&copy; 2025 Anganwadi Portal. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        async function fetchMotherData() {
+            try {
+                const response = await fetch('/request_forms');
+                const data = await response.json();
+                renderTable(data.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function renderTable(data) {
+            const tableBody = document.getElementById('motherTableBody');
+            tableBody.innerHTML = ""; // Clear table before appending new data
+        
+            data.forEach(item => {
+                const isVisited = item.status === "Visited";
+                const disabled = isVisited ? "disabled" : "";
+                const buttonColor = isVisited ? "bg-gray-500 cursor-not-allowed" : "bg-teal-500 hover:bg-teal-600";
+        
+                const row = `<tr class='border border-gray-700 bg-gray-800 hover:bg-gray-700 transition'>
+                    <td class='border border-gray-700 p-3'>${item.id}</td>
+                    <td class='border border-gray-700 p-3'>${item.full_name}</td>
+                    <td class='border border-gray-700 p-3'>${item.aadhar_number}</td>
+                    <td class='border border-gray-700 p-3'>${item.age}</td>
+                    <td class='border border-gray-700 p-3'>${item.address}</td>
+                    <td class='border border-gray-700 p-3'>${item.contact_number}</td>
+                    <td class='border border-gray-700 p-3'>
+                        <select class="status-dropdown bg-gray-900 text-white p-1 rounded" data-id="${item.id}">
+                            <option value="Not visited" ${item.status === "Not visited" ? "selected" : ""}>Not Visited</option>
+                            <option value="Visited" ${item.status === "Visited" ? "selected" : ""}>Visited</option>
+                        </select>
+                    </td>
+                    <td class='border border-gray-700 p-3'>
+                        <button class="update-btn ${buttonColor} text-white px-3 py-1 rounded" 
+                            data-id="${item.id}" ${disabled}>Update</button>
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        
+            document.querySelectorAll(".update-btn").forEach(button => {
+                button.addEventListener("click", updateStatus);
+            });
+        }
+        
+        async function updateStatus(event) {
+            const id = event.target.dataset.id;
+            const row = event.target.closest("tr");
+            const statusDropdown = row.querySelector(".status-dropdown");
+            const button = event.target;
+
+            const selectedStatus = statusDropdown.value; // Get selected value
+        
+            try {
+                const response = await fetch(`/update_status/${id}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status: selectedStatus })  
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Status updated successfully!");
+                    fetchMotherData(); // Refresh the data
+                } else {
+                    alert("Error: " + result.detail);
+                }
+            } catch (error) {
+                alert("Failed to update status: " + error);
+            }
+        }
+
+        // 🌟 Filter Logic
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#motherTableBody tr");
+
+            rows.forEach(row => {
+                const name = row.children[1].textContent.toLowerCase();
+                const aadhar = row.children[2].textContent.toLowerCase();
+                
+                row.style.display = (name.includes(searchTerm) || aadhar.includes(searchTerm)) ? "" : "none";
+            });
+        });
+
+        document.getElementById("statusFilter").addEventListener("change", function () {
+            const selectedStatus = this.value;
+            const rows = document.querySelectorAll("#motherTableBody tr");
+
+            rows.forEach(row => {
+                const status = row.children[6].querySelector("select").value;
+                row.style.display = (selectedStatus === "all" || status === selectedStatus) ? "" : "none";
+            });
+        });
+
+        window.onload = fetchMotherData;
+    </script>
+</body>
+</html>

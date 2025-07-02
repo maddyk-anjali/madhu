@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care-One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom dropdown styles */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 12rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        /* For large screens, show dropdown on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* For mobile view, make dropdown appear when clicked */
+        .mobile-dropdown {
+            display: none;
+        }
+
+        .mobile-dropdown.active {
+            display: block;
+        }
+
+        /* Hide the desktop nav on mobile screens */
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+
+        /* Show mobile nav on smaller screens */
+        @media (max-width: 767px) {
+            .mobile-nav {
+                display: block;
+            }
+        }
+
+        /* Active link style */
+        .active-link {
+            color: #1E40AF;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* Shadow effect for the navigation bar */
+        .nav-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hover effects for nav links */
+        .nav-link:hover {
+            color: #1E40AF;
+            text-decoration: underline;
+        }
+         /* Sliding panel styles */
+         .user-panel {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Hidden initially */
+            width: 300px;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s ease-in-out;
+            z-index: 20;
+        }
+
+        .user-panel.open {
+            right: 0; /* Slide in */
+        }
+
+        .user-panel-header {
+            background: #1E40AF;
+            color: #ffffff;
+            padding: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .user-panel-content {
+            padding: 1rem;
+        }
+
+        .user-panel-content a {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            color: #1E40AF;
+            font-weight: 500;
+            /* transition: background 0.3s; */
+        }
+
+        .user-panel-content a:hover {
+            background: #f1f5f9;
+        }
+
+        .close-btn {
+            background: #e5e7eb;
+            color: #1E40AF;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    {% include "users/nav.html" %}
+
+    <section class="py-12 bg-blue-50 animate-fade-in slow-motion">
+        <div class="container mx-auto px-6 lg:px-12">
+            <br><br>
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Pregnancy Nutrition Guide</h2>
+            <button onclick="toggleChecklist()" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">Checklist ✅</button>
+
+        <!-- Checklist Modal -->
+        <div id="checklistModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h3 class="text-2xl font-semibold text-blue-700">Daily Nutrition Checklist</h3>
+                <form id="checklistForm" class="mt-4">
+                    <label class="block"><input type="checkbox"> Breakfast ✅</label>
+                    <label class="block mt-2"><input type="checkbox"> Lunch ✅</label>
+                    <label class="block mt-2"><input type="checkbox"> Dinner ✅</label>
+                    <label class="block mt-2"><input type="checkbox"> Snacks ✅</label>
+                    <button type="submit" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Save</button>
+                </form>
+                <button onclick="toggleChecklist()" class="mt-4 text-red-600">Close ❌</button>
+            </div>
+        </div>
+        <script>
+            function toggleChecklist() {
+                document.getElementById("checklistModal").classList.toggle("hidden");
+            }
+            </script>
+            <!-- Weekly Meal Plan (What to Eat & Benefits) -->
+            <div class="mt-6">
+                <h3 class="text-2xl font-semibold text-blue-700 text-center">🥗 Weekly Nutrition Plan</h3>
+                <p class="text-center text-gray-600">A guide on what to eat each day for a healthy pregnancy.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Monday</h4>
+                        <p class="text-gray-700 mt-2">🍎 Fruits, Whole Grains, & Nuts - Boosts digestion & energy.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Tuesday</h4>
+                        <p class="text-gray-700 mt-2">🥩 Lean Meat, Eggs, & Dairy - Provides essential proteins & calcium.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Wednesday</h4>
+                        <p class="text-gray-700 mt-2">🥦 Leafy Greens, Lentils, & Beans - Rich in iron & folic acid.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Thursday</h4>
+                        <p class="text-gray-700 mt-2">🐟 Fish, Nuts, & Avocado - Provides omega-3 for brain growth.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Friday</h4>
+                        <p class="text-gray-700 mt-2">🥕 Carrots, Sweet Potatoes, & Dairy - Boosts immunity & vision.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Saturday</h4>
+                        <p class="text-gray-700 mt-2">🥜 Seeds, Yogurt, & Berries - Provides probiotics & antioxidants.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Sunday</h4>
+                        <p class="text-gray-700 mt-2">🍚 Brown Rice, Tofu, & Almonds - Healthy carbs & proteins.</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Daily Meal Plan (Full Meals & Nutrition) -->
+            <div class="mt-12">
+                <h3 class="text-2xl font-semibold text-blue-700 text-center">🍽️ Daily Meal Plan</h3>
+                <p class="text-center text-gray-600">A detailed breakdown of what to eat each day.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Monday</h4>
+                        <p class="text-gray-700 mt-2">🥣 Breakfast: Oatmeal with almonds & berries (350 kcal) - High in fiber & iron.</p>
+                        <p class="text-gray-700 mt-2">🍗 Lunch: Grilled chicken salad (450 kcal) - Lean protein & vitamins.</p>
+                        <p class="text-gray-700 mt-2">🍛 Dinner: Lentil soup with brown rice (420 kcal) - Rich in folic acid & fiber.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Tuesday</h4>
+                        <p class="text-gray-700 mt-2">🥚 Breakfast: Scrambled eggs with spinach (300 kcal) - Iron & protein boost.</p>
+                        <p class="text-gray-700 mt-2">🐟 Lunch: Baked salmon with quinoa (500 kcal) - Omega-3 & essential minerals.</p>
+                        <p class="text-gray-700 mt-2">🥗 Dinner: Stir-fried veggies with tofu (400 kcal) - Fiber & plant-based protein.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Wednesday</h4>
+                        <p class="text-gray-700 mt-2">🥛 Breakfast: Greek yogurt with granola & honey (400 kcal) - Calcium & probiotics.</p>
+                        <p class="text-gray-700 mt-2">🥕 Lunch: Chickpea salad with lemon dressing (420 kcal) - High in protein & fiber.</p>
+                        <p class="text-gray-700 mt-2">🍚 Dinner: Brown rice with roasted sweet potatoes (450 kcal) - Healthy carbs & vitamins.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Thursday</h4>
+                        <p class="text-gray-700 mt-2">🍌 Breakfast: Banana smoothie with flax seeds (320 kcal) - Potassium & omega-3.</p>
+                        <p class="text-gray-700 mt-2">🍗 Lunch: Grilled turkey with whole-grain bread (480 kcal) - Lean protein & fiber.</p>
+                        <p class="text-gray-700 mt-2">🥔 Dinner: Mashed sweet potatoes & steamed fish (430 kcal) - Rich in vitamin A.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Friday</h4>
+                        <p class="text-gray-700 mt-2">🥜 Breakfast: Peanut butter on toast with apple slices (350 kcal) - Good fats & fiber.</p>
+                        <p class="text-gray-700 mt-2">🥩 Lunch: Lean beef with sautéed greens (500 kcal) - High in iron & protein.</p>
+                        <p class="text-gray-700 mt-2">🍲 Dinner: Lentil curry with whole wheat chapati (420 kcal) - Plant-based protein.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Saturday</h4>
+                        <p class="text-gray-700 mt-2">🍓 Breakfast: Mixed berry smoothie (300 kcal) - Antioxidants & vitamins.</p>
+                        <p class="text-gray-700 mt-2">🍚 Lunch: Quinoa salad with chickpeas (480 kcal) - Protein & fiber-rich.</p>
+                        <p class="text-gray-700 mt-2">🥦 Dinner: Roasted vegetables with brown rice (430 kcal) - Iron & essential vitamins.</p>
+                    </div>
+                    <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                        <h4 class="text-xl font-semibold text-blue-700">Sunday</h4>
+                        <p class="text-gray-700 mt-2">🍳 Breakfast: Boiled eggs with avocado toast (350 kcal) - Good fats & protein.</p>
+                        <p class="text-gray-700 mt-2">🥗 Lunch: Spinach salad with nuts & feta (470 kcal) - Calcium & omega-3.</p>
+                        <p class="text-gray-700 mt-2">🍜 Dinner: Vegetable soup with whole wheat pasta (450 kcal) - Fiber & vitamins.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include "users/footer.html" %}
+</body>
+</html>

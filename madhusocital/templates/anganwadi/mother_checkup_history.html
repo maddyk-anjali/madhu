@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mother Checkup History</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+  <!-- 🌟 Navigation -->
+  {% include "anganwadi/nav.html" %}
+
+  <!-- 🌟 Form Section -->
+  <section class="container mx-auto py-16">
+    <div class="max-w-3xl mx-auto bg-gray-800 shadow-lg p-6">
+      <h2 class="text-2xl font-semibold text-white text-center mb-5">Add Mother Checkup Record</h2>
+      <form id="checkupForm" class="space-y-4">
+        <div>
+          <label class="block text-white font-medium">Mother ID</label>
+          <input type="number" id="mother_id" class="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+        </div>
+        <div>
+          <label class="block text-white font-medium">Checkup Type</label>
+          <select id="checkup_type" class="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+            <option value="First Trimester">First Trimester</option>
+            <option value="Second Trimester">Second Trimester</option>
+            <option value="Third Trimester">Third Trimester</option>
+            <option value="Postnatal">Postnatal</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-white font-medium">Checkup Date</label>
+          <input type="date" id="checkup_date" class="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+        </div>
+        <div>
+          <label class="block text-white font-medium">Blood Pressure</label>
+          <input type="text" id="blood_pressure" placeholder="e.g., 120/80" class="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400">
+        </div>
+        <div>
+          <label class="block text-white font-medium">Weight (kg)</label>
+          <input type="number" id="weight_kg" step="0.1" class="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400">
+        </div>
+        <div>
+          <label class="block text-white font-medium">Hemoglobin Level</label>
+          <input type="number" id="hemoglobin_level" step="0.1" class="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400">
+        </div>
+        <div>
+          <label class="block text-white font-medium">Notes</label>
+          <textarea id="notes" rows="3" class="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-none hover:bg-blue-700 transition">Submit</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 🌟 Footer -->
+  <footer class="bg-gray-800 text-white text-center py-4">
+    <p>&copy; 2025 Anganwadi Portal. All Rights Reserved.</p>
+  </footer>
+
+  <!-- 🌟 JavaScript for Form Handling -->
+  <script>
+    const MotherCheckup = (() => {
+      const namespace = {};
+
+      namespace.init = () => {
+        const form = document.getElementById("checkupForm");
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const formData = {
+            mother_id: document.getElementById("mother_id").value,
+            checkup_type: document.getElementById("checkup_type").value,
+            checkup_date: document.getElementById("checkup_date").value,
+            blood_pressure: document.getElementById("blood_pressure").value,
+            weight_kg: document.getElementById("weight_kg").value,
+            hemoglobin_level: document.getElementById("hemoglobin_level").value,
+            notes: document.getElementById("notes").value,
+          };
+
+          try {
+            const response = await fetch("/mother_checkup_history", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert(result.message);
+              form.reset();
+            } else {
+              alert(result.detail || "An error occurred.");
+            }
+          } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("An error occurred while submitting the form.");
+          }
+        });
+      };
+
+      return namespace;
+    })();
+
+    document.addEventListener("DOMContentLoaded", MotherCheckup.init);
+  </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care-One</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom dropdown styles */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 12rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        /* For large screens, show dropdown on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* For mobile view, make dropdown appear when clicked */
+        .mobile-dropdown {
+            display: none;
+        }
+
+        .mobile-dropdown.active {
+            display: block;
+        }
+
+        /* Hide the desktop nav on mobile screens */
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+
+        /* Show mobile nav on smaller screens */
+        @media (max-width: 767px) {
+            .mobile-nav {
+                display: block;
+            }
+        }
+
+        /* Active link style */
+        .active-link {
+            color: #1E40AF;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* Shadow effect for the navigation bar */
+        .nav-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hover effects for nav links */
+        .nav-link:hover {
+            color: #1E40AF;
+            text-decoration: underline;
+        }
+         /* Sliding panel styles */
+         .user-panel {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Hidden initially */
+            width: 300px;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s ease-in-out;
+            z-index: 20;
+        }
+
+        .user-panel.open {
+            right: 0; /* Slide in */
+        }
+
+        .user-panel-header {
+            background: #1E40AF;
+            color: #ffffff;
+            padding: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .user-panel-content {
+            padding: 1rem;
+        }
+
+        .user-panel-content a {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            color: #1E40AF;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .user-panel-content a:hover {
+            background: #f1f5f9;
+        }
+
+        .close-btn {
+            background: #e5e7eb;
+            color: #1E40AF;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    {% include "users/nav.html" %}
+
+    <br>
+
+    <div class="min-h-screen flex items-center justify-center px-4 bg-gray-100 mt-12 p-4">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl border border-gray-300">
+            <h2 class="text-2xl font-semibold text-center text-blue-500">
+                <i class="fa-solid fa-id-card"></i><b> Mother Card Application</b>
+            </h2>
+
+            <form class="space-y-6 mt-4" id="motherCardForm" method="post" action="/submit-mother-form/" enctype="multipart/form-data">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block font-medium">First Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="first_name" placeholder="Enter First Name" required class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Middle Name</label>
+                        <input type="text" name="middle_name" placeholder="Enter Middle Name (Optional)" class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Last Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="last_name" placeholder="Enter Last Name" required class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Husband's Name</label>
+                        <input type="text" name="husband_name" placeholder="Enter Husband's Name (If Applicable)" class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Date of Birth <span class="text-red-500">*</span></label>
+                        <input type="date" name="date_of_birth" required class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Aadhar Number <span class="text-red-500">*</span></label>
+                        <input type="text" name="aadhar_number" placeholder="Enter 12-digit Aadhar Number" required class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Mobile Number <span class="text-red-500">*</span></label>
+                        <input type="text" name="mobile_number" placeholder="Enter Mobile Number" required class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Alternate Mobile Number</label>
+                        <input type="text" name="alternate_mobile_number" placeholder="Enter Alternate Mobile Number (Optional)" class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Email <span class="text-red-500">*</span></label>
+                        <input type="email" name="email" placeholder="Enter Email Address" required class="input-field">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Bank Account Number <span class="text-red-500">*</span></label>
+                        <input type="text" name="bank_account_number" placeholder="Enter Bank Account Number" required class="input-field">
+                    </div>
+            
+                    <div class="md:col-span-2">
+                        <label class="block font-medium">Residential Address <span class="text-red-500">*</span></label>
+                        <textarea name="residential_address" placeholder="Enter Full Address" required class="input-field"></textarea>
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Pregnancy Confirmation Report <span class="text-red-500">*</span></label>
+                        <input type="file" name="pregnancy_report" required class="file-input">
+                    </div>
+            
+                    <div>
+                        <label class="block font-medium">Residence Proof <span class="text-red-500">*</span></label>
+                        <input type="file" name="residence_proof" required class="file-input">
+                    </div>
+                </div>
+            
+                <!-- Response Message -->
+                <div id="responseMessage" class="text-center font-medium mt-4"></div>
+            
+                <div class="flex justify-between mt-6">
+                    <button type="reset" class="w-1/3 bg-gray-400 text-white py-3 rounded-md font-semibold hover:bg-gray-500 transition">
+                        Clear
+                    </button>
+                    <button type="submit" class="w-1/3 bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition">
+                        Submit
+                    </button>
+                </div>
+            </form>
+            
+            <script>
+                document.getElementById("motherCardForm").addEventListener("submit", async function(event) {
+                    event.preventDefault();  // Prevent default form submission
+                    
+                    const formData = new FormData(this);
+                    
+                    try {
+                        const response = await fetch("/submit-mother-form/", {
+                            method: "POST",
+                            body: formData
+                        });
+            
+                        const result = await response.json();
+                        
+                        if (result.error) {
+                            alert("Error: " + result.error);
+                        } else {
+                            alert("Success: " + result.message);
+                            document.getElementById("responseMessage").innerHTML = "<span class='text-green-600'>" + result.message + "</span>";
+                            this.reset();  // Reset form after successful submission
+                        }
+                    } catch (error) {
+                        alert("Something went wrong! Please try again.");
+                    }
+                });
+            </script>
+            
+            <style>
+                .input-field {
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid gray;
+                    border-radius: 5px;
+                    margin-top: 5px;
+                }
+                .file-input {
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid gray;
+                    border-radius: 5px;
+                    margin-top: 5px;
+                }
+            </style>
+            
+            
+        </div>
+    </div>
+
+    <!-- Popup Modal -->
+    <div id="instructionPopup" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-106 relative">
+            <button id="closePopup" class="absolute top-2 right-2 text-gray-600 hover:text-red-500">
+                <i class="fa-solid fa-times"></i>
+            </button>
+            <h2 class="text-xl font-semibold text-gray-800">Instructions for Mother Card Application</h2>
+            <ul class="list-disc pl-5 mt-3 text-gray-700 space-y-2">
+                <li>All fields marked with <span class="text-red-500">*</span> are mandatory.</li>
+                <li>Ensure the entered Aadhar number follows the correct format (XXXX-XXXX-XXXX).</li>
+                <li>Provide a valid mobile number and email for communication purposes.</li>
+                <li>Upload a clear and valid Pregnancy Confirmation Report.</li>
+                <li>Upload a Residence Proof document (e.g., Aadhaar Card, Utility Bill, etc.).</li>
+                <li>Double-check the entered details before submitting the application.</li>
+                <li>Click the "Clear" button to reset the form, if necessary.</li>
+                <li>After submission, you will receive a confirmation email with further instructions.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("instructionBtn").addEventListener("click", function () {
+            document.getElementById("instructionPopup").classList.remove("hidden");
+        });
+        document.getElementById("closePopup").addEventListener("click", function () {
+            document.getElementById("instructionPopup").classList.add("hidden");
+        });
+        
+    </script>    
+    {% include "users/footer.html" %}
+
+</body>
+</html>

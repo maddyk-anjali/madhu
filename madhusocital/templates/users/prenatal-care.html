@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenatal Care - Care One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+    {% include "users/nav.html" %}
+
+    <section class="max-w-6xl mx-auto px-4 py-12">
+        <h1 class="text-3xl font-bold text-blue-600 mb-6">Prenatal Care</h1>
+        <p class="text-gray-700">Prenatal care is essential for a healthy pregnancy. Regular checkups help monitor the baby's development and ensure the mother's well-being.</p>
+        
+        <h2 class="text-2xl font-semibold text-gray-800 mt-6">Key Prenatal Checkups</h2>
+        <ul class="list-disc pl-6 text-gray-700">
+            <li>First Trimester Screening</li>
+            <li>Ultrasounds & Fetal Development</li>
+            <li>Blood Pressure & Weight Monitoring</li>
+            <li>Iron & Vitamin Supplements</li>
+        </ul>
+
+        <img src="static/images/prenatal.jpg" alt="Prenatal Care" class="rounded-lg shadow-lg mt-6 w-full">
+    </section>
+
+    {% include "users/footer.html" %}
+</body>
+</html>

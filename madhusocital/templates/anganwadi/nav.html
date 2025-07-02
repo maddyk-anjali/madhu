@@ -1,0 +1,83 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dropdowns = document.querySelectorAll(".dropdown");
+
+            dropdowns.forEach((dropdown) => {
+                const menu = dropdown.querySelector(".dropdown-menu");
+
+                // Show dropdown on hover
+                dropdown.addEventListener("mouseenter", () => {
+                    menu.classList.remove("hidden");
+                });
+
+                // Hide dropdown when mouse leaves both main and submenu
+                dropdown.addEventListener("mouseleave", () => {
+                    setTimeout(() => {
+                        if (!dropdown.matches(":hover") && !menu.matches(":hover")) {
+                            menu.classList.add("hidden");
+                        }
+                    }, 300); // Delay for smoother transition
+                });
+            });
+        });
+    </script>
+</head>
+
+<!-- 🌟 Navbar -->
+<nav class="bg-[#121212] text-white shadow-lg fixed top-0 w-full z-50">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <!-- 🚀 Logo -->
+        <a href="#" class="text-2xl font-bold text-teal-400 flex items-center">
+            <i class="fa-solid fa-hospital-user mr-2"></i> Anganwadi Portal
+        </a>
+
+        <!-- 🌟 Hamburger Button (Mobile) -->
+        <button id="menu-btn" class="md:hidden text-teal-400 focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+
+        <!-- 🌟 Navbar Links -->
+        <ul id="menu" class="hidden md:flex space-x-6 text-lg items-center">
+            <li><a href="/home" class="hover:text-teal-400 flex items-center"><i class="fa-solid fa-house mr-2"></i> Home</a></li>
+            <li><a href="/request" class="hover:text-teal-400 flex items-center"><i class="fa-solid fa-baby mr-2"></i> Pregnancy Requests</a></li>
+
+            <!-- 🔹 Dropdown for Mother -->
+            <li class="relative dropdown">
+                <a href="#" class="hover:text-teal-400 flex items-center">
+                    <i class="fa-solid fa-user-nurse mr-2"></i> Mother
+                </a>
+                <ul class="absolute left-0 mt-2 w-48 bg-gray-800 text-white rounded-md shadow-lg hidden dropdown-menu">
+                    <li><a href="/form" class="block px-4 py-2 hover:bg-teal-400"><i class="fa-solid fa-id-card mr-2"></i> Mother Card</a></li>
+                    <li><a href="/status" class="block px-4 py-2 hover:bg-teal-400"><i class="fa-solid fa-clipboard-check mr-2"></i> Check Status</a></li>
+                    <li><a href="/mother_checkup_history" class="block px-4 py-2 hover:bg-teal-400"><i class="fa-solid fa-clipboard-check mr-2"></i> Check Ups</a></li>
+                </ul>
+            </li>
+
+            <!-- 🔹 Dropdown for Vaccine & Nutrition -->
+            <li class="relative dropdown">
+                <a href="#" class="hover:text-teal-400 flex items-center">
+                    <i class="fa-solid fa-syringe mr-2"></i> Vaccine & Nutrition
+                </a>
+                <ul class="absolute left-0 mt-2 w-48 bg-gray-800 text-white rounded-md shadow-lg hidden dropdown-menu">
+                    <li><a href="/request_vaccines_nutrition" class="block px-4 py-2 hover:bg-teal-400"><i class="fa-solid fa-hand-holding-medical mr-2"></i> Requests</a></li>
+                    <li><a href="/staff_vaccine" class="block px-4 py-2 hover:bg-teal-400"><i class="fa-solid fa-pills mr-2"></i> Available</a></li>
+                    <li><a href="/distribution" class="block px-4 py-2 hover:bg-teal-400"><i class="fa-solid fa-pills mr-2"></i> Distribution</a></li>
+                </ul>
+            </li>
+
+            <!-- Logout -->
+            {% if request.session.get("staff") %}
+                <li>
+                    <a href="/anganwadi/logout" class="bg-red-600 text-white px-4 py-2 rounded-md transition duration-300 hover:bg-red-700 flex items-center">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<br>
+<br>   
+<br>

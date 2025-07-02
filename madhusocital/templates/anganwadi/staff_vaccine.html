@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Overview</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#121212] text-white p-0">
+
+    <!-- 🌟 Navigation -->
+    {% include "anganwadi/nav.html" %}
+
+    <div class="max-w-6xl mx-auto bg-gray-900 shadow-lg rounded-lg p-6 mb-8">
+        <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">Vaccine List</h2>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border border-gray-700 rounded-lg overflow-hidden shadow-md bg-gray-800">
+                <thead class="bg-teal-500 text-white text-lg">
+                    <tr>
+                        <th class="border border-gray-700 p-3">Vaccine Name</th>
+                        <th class="border border-gray-700 p-3">Available</th>
+                        <th class="border border-gray-700 p-3">Min Age</th>
+                        <th class="border border-gray-700 p-3">Max Age</th>
+                        <th class="border border-gray-700 p-3">Manufactured Date</th>
+                        <th class="border border-gray-700 p-3">Expiry Date</th>
+                        <th class="border border-gray-700 p-3">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="vaccineTable" class="text-gray-300 text-center">
+                    <tr>
+                        <td colspan="7" class="text-center p-4 text-gray-500">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 🌟 Nutrition Table -->
+    <div class="max-w-6xl mx-auto bg-gray-900 shadow-lg rounded-lg p-6">
+        <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">Nutrition Data</h2>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border border-gray-700 rounded-lg overflow-hidden shadow-md bg-gray-800">
+                <thead class="bg-teal-500 text-white text-lg">
+                    <tr id="nutritionTableHead">
+                        <!-- Table Headers will be added dynamically -->
+                    </tr>
+                </thead>
+                <tbody id="nutritionTableBody" class="text-gray-300 text-center">
+                    <tr>
+                        <td colspan="100%" class="text-center p-4 text-gray-500">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // ✅ Fetch & Display Vaccine Data
+        async function fetchVaccines() {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/api/get_vaccines");
+                const data = await response.json();
+                const tableBody = document.getElementById("vaccineTable");
+                tableBody.innerHTML = "";
+
+                if (data.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-gray-500">No vaccines available.</td></tr>`;
+                    return;
+                }
+
+                data.forEach((vaccine) => {
+                    const row = document.createElement("tr");
+                    row.classList.add("hover:bg-gray-700");
+                    row.innerHTML = `
+                        <td class="border border-gray-700 p-3">${vaccine[1]}</td>
+                        <td class="border border-gray-700 p-3">${vaccine[2] ? "<span class='text-green-400'>Yes</span>" : "<span class='text-red-400'>No</span>"}</td>
+                        <td class="border border-gray-700 p-3">${vaccine[4]}</td>
+                        <td class="border border-gray-700 p-3">${vaccine[5]}</td>
+                        <td class="border border-gray-700 p-3">${vaccine[6]}</td>
+                        <td class="border border-gray-700 p-3">${vaccine[7]}</td>
+                        <td class="border border-gray-700 p-3">${vaccine[3]}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching vaccines:", error);
+            }
+        }
+
+        // ✅ Fetch & Display Nutrition Data
+        async function fetchNutritionData() {
+            try {
+                const response = await fetch("/admin/get-nutrition");
+                const data = await response.json();
+                const tableHead = document.getElementById("nutritionTableHead");
+                const tableBody = document.getElementById("nutritionTableBody");
+
+                tableBody.innerHTML = ""; // Clear table content
+
+                if (data.nutrition.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="100%" class="text-center p-4 text-gray-500">No Nutrition Data Available</td></tr>`;
+                    return;
+                }
+
+                // Extract columns dynamically
+                const columns = Object.keys(data.nutrition[0]);
+
+                // Create table headers
+                tableHead.innerHTML = columns.map(col => `<th class="border border-gray-700 p-3">${col.replace(/_/g, ' ').toUpperCase()}</th>`).join("");
+
+                // Populate table rows
+                data.nutrition.forEach(row => {
+                    const rowHtml = columns.map(col => `<td class="border border-gray-700 p-3">${row[col] || 'N/A'}</td>`).join("");
+                    tableBody.innerHTML += `<tr class="hover:bg-gray-700">${rowHtml}</tr>`;
+                });
+            } catch (error) {
+                console.error("Error fetching nutrition data:", error);
+            }
+        }
+
+        // Fetch data when page loads
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchVaccines();
+            fetchNutritionData();
+        });
+    </script>
+
+</body>
+</html>

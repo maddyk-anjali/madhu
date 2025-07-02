@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anganwadi Portal</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-[#121212] text-white">
+
+    <!-- 🌟 Navigation -->
+    {% include "anganwadi/nav.html" %}
+
+    <!-- 🌟 Hero Section -->
+    <header class="text-center py-20">
+        <h1 class="text-5xl font-bold text-teal-400 animate-bounce">Welcome to the Anganwadi Portal</h1>
+        <p class="mt-4 text-lg text-gray-300">Empowering Mothers & Children for a Healthier Future</p>
+        <a href="#services" class="mt-6 inline-block bg-teal-500 text-white font-semibold px-6 py-3 rounded-lg transition hover:bg-teal-600">Get Started </a>
+    </header>
+
+    <!-- 🌟 Services Section -->
+    <section id="services" class="container mx-auto py-16 text-center" x-data="{ active: '' }">
+        <h2 class="text-3xl font-bold text-teal-400">Our Services</h2>
+        <p class="mt-2 text-gray-300">We provide various welfare services for women, children, and families.</p>
+
+        <div class="relative grid md:grid-cols-3 gap-8 mt-8">
+            <div @click="active = 'nutrition'" class="bg-gray-800 p-6 rounded-lg shadow-md cursor-pointer transition transform hover:scale-105">
+                <i class="fas fa-apple-alt text-4xl text-teal-400"></i>
+                <h3 class="text-xl font-semibold mt-4">Supplementary Nutrition</h3>
+                <p class="text-gray-300 mt-2">Providing nutritious food to children and mothers.</p>
+            </div>
+            <div @click="active = 'pregnancy'" class="bg-gray-800 p-6 rounded-lg shadow-md cursor-pointer transition transform hover:scale-105">
+                <i class="fas fa-female text-4xl text-teal-400"></i>
+                <h3 class="text-xl font-semibold mt-4">Maternity Support</h3>
+                <p class="text-gray-300 mt-2">Financial aid and guidance for pregnant women.</p>
+            </div>
+            <div @click="active = 'education'" class="bg-gray-800 p-6 rounded-lg shadow-md cursor-pointer transition transform hover:scale-105">
+                <i class="fas fa-book-open text-4xl text-teal-400"></i>
+                <h3 class="text-xl font-semibold mt-4">Early Child Education</h3>
+                <p class="text-gray-300 mt-2">Pre-primary education and development programs.</p>
+            </div>
+        </div>
+
+        <!-- Sliding Info Section -->
+        <div class="relative mt-6 w-full max-w-2xl mx-auto">
+            <div class="bg-gray-700 p-6 rounded-lg shadow-lg transform transition-all duration-500"
+                 :class="{'translate-x-0 opacity-100': active === 'nutrition', 'translate-x-full opacity-0': active !== 'nutrition'}">
+                <h3 class="text-2xl font-semibold text-teal-400">Supplementary Nutrition</h3>
+                <p class="text-gray-300 mt-2">We ensure that pregnant women, lactating mothers, and children receive essential nutritional support through fortified meals.</p>
+            </div>
+            <div class="bg-gray-700 p-6 rounded-lg shadow-lg transform transition-all duration-500 absolute top-0 left-0 w-full"
+                 :class="{'translate-x-0 opacity-100': active === 'pregnancy', 'translate-x-full opacity-0': active !== 'pregnancy'}">
+                <h3 class="text-2xl font-semibold text-teal-400">Maternity Support</h3>
+                <p class="text-gray-300 mt-2">Our schemes provide financial assistance and healthcare services to support women during and after pregnancy.</p>
+            </div>
+            <div class="bg-gray-700 p-6 rounded-lg shadow-lg transform transition-all duration-500 absolute top-0 left-0 w-full"
+                 :class="{'translate-x-0 opacity-100': active === 'education', 'translate-x-full opacity-0': active !== 'education'}">
+                <h3 class="text-2xl font-semibold text-teal-400">Early Child Education</h3>
+                <p class="text-gray-300 mt-2">We offer structured early childhood education programs to ensure cognitive and social development in young children.</p>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        document.getElementById("distributionForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            
+            const formData = {
+                user_id: document.getElementById("user_id").value,
+                type: document.getElementById("type").value,
+                item_name: document.getElementById("item_name").value,
+                quantity: document.getElementById("quantity").value,
+                unit: document.getElementById("unit").value,
+                distribution_date: document.getElementById("distribution_date").value
+            };
+            
+            const response = await fetch("/add_distribution", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            alert(result.message || result.error);
+        });
+    </script>
+
+    
+
+    <!-- 🌟 Staff Image Gallery -->
+    <!-- <section class="container mx-auto py-16 text-center">
+        <div class="grid md:grid-cols-3 gap-8 mt-8">
+            <div class="overflow-hidden rounded-lg shadow-lg hover:scale-105 transition transform">
+                <img src="sstaff1.jpg" alt="Staff Member 1" class="w-full h-auto">
+            </div>
+            <div class="overflow-hidden rounded-lg shadow-lg hover:scale-105 transition transform">
+                <img src="staff4.jpg" alt="Staff Member 2" class="w-full h-auto">
+            </div>
+            <div class="overflow-hidden rounded-lg shadow-lg hover:scale-105 transition transform">
+                <img src="staff3.jpg" alt="Staff Member 3" class="w-full h-auto">
+            </div>
+        </div>
+    </section> -->
+
+    <!-- 🌟 Contact Section -->
+    <section class="bg-gray-900 py-16">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold text-teal-400">Contact Us</h2>
+            <p class="mt-2 text-gray-300">Get in touch with our support team for any assistance.</p>
+            <div class="mt-6 flex justify-center space-x-6">
+                <a href="#" class="text-teal-400 text-3xl"><i class="fas fa-phone"></i></a>
+                <a href="#" class="text-teal-400 text-3xl"><i class="fas fa-envelope"></i></a>
+                <a href="#" class="text-teal-400 text-3xl"><i class="fas fa-map-marker-alt"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🌟 Footer -->
+    <footer class="bg-[#121212] text-white text-center py-4">
+        <p>&copy; 2025 Anganwadi Portal. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

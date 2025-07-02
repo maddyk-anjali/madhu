@@ -1,0 +1,31 @@
+#Implement a python program to demonstrate Data visualization with various Types of Graphs using Numpy
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+x = np.array([2,4,6,8,10])
+y = np.array([3,4,6,10,13])
+plt.figure(figsize=(6,4))
+plt.plot(x,y)
+plt.title('Line Graph')
+plt.xlabel('X axis')
+plt.ylabel('Y axis')
+plt.show()
+plt.figure(figsize=(6,4))
+plt.scatter(x,y)
+plt.title('Scatter Graph')
+plt.xlabel('X axis')
+plt.ylabel('Y axis')
+plt.show()
+plt.figure(figsize=(6,4))
+plt.bar(x,y)
+plt.title('Bar Graph')
+plt.xlabel('X axis')
+plt.ylabel('Y axis')
+plt.show()
+plt.figure(figsize=(6,4))
+plt.pie(x,labels=['a','b','c','d','e'])
+plt.title('Pie Graph')
+plt.xlabel('X axis')
+plt.ylabel('Y axis')
+plt.show()

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care-One | Mother Checkup History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #333;
+        }
+        .table-container {
+            background: #ffffff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        thead {
+            background: #007bff;
+            color: #ffffff;
+        }
+        @media (max-width: 768px) {
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include "users/nav.html" %}
+
+    <div class="container mx-auto mt-28 px-4 mb-24">
+        <h2 class="text-xl font-bold mb-4 text-center">Mother Checkup History</h2>
+        
+        <div class="table-container">
+            <div class="overflow-x-auto">
+                <table class="table-auto rounded-lg">
+                    <thead>
+                        <tr>
+                            <th>Checkup Type</th>
+                            <th>Checkup Date</th>
+                            <th>Blood Pressure</th>
+                            <th>Weight (kg)</th>
+                            <th>Hemoglobin Level</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTable">
+                        <!-- Data dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="noRecordsMessage" class="mt-4 text-center hidden">
+                <p>No checkup history found.</p>
+            </div>
+        </div>
+    </div>
+
+    {% include "users/footer.html" %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const historyTable = document.getElementById("historyTable");
+            const noRecordsMessage = document.getElementById("noRecordsMessage");
+
+            try {
+                const response = await fetch("/mother_checkup_history_fetch"); // Ensure FastAPI is running
+                if (!response.ok) {
+                    throw new Error("Server error");
+                }
+
+                const data = await response.json();
+
+                if (data.length > 0) {
+                    data.forEach(record => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${record.checkup_type}</td>
+                            <td>${record.checkup_date}</td>
+                            <td>${record.blood_pressure} mmHg</td>
+                            <td>${record.weight_kg} kg</td>
+                            <td>${record.hemoglobin_level} g/dL</td>
+                            <td>${record.notes || "No notes"}</td>
+                        `;
+                        historyTable.appendChild(row);
+                    });
+                } else {
+                    noRecordsMessage.classList.remove("hidden");
+                }
+            } catch (error) {
+                console.error("Error fetching mother checkup history:", error);
+                alert("Failed to fetch mother checkup history. Please try again.");
+            }
+        });
+    </script>
+</body>
+</html>

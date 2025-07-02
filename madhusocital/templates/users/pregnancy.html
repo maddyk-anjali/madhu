@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care-One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom dropdown styles */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 12rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        /* For large screens, show dropdown on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* For mobile view, make dropdown appear when clicked */
+        .mobile-dropdown {
+            display: none;
+        }
+
+        .mobile-dropdown.active {
+            display: block;
+        }
+
+        /* Hide the desktop nav on mobile screens */
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+
+        /* Show mobile nav on smaller screens */
+        @media (max-width: 767px) {
+            .mobile-nav {
+                display: block;
+            }
+        }
+
+        /* Active link style */
+        .active-link {
+            color: #1E40AF;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* Shadow effect for the navigation bar */
+        .nav-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hover effects for nav links */
+        .nav-link:hover {
+            color: #1E40AF;
+            text-decoration: underline;
+        }
+         /* Sliding panel styles */
+         .user-panel {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Hidden initially */
+            width: 300px;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s ease-in-out;
+            z-index: 20;
+        }
+
+        .user-panel.open {
+            right: 0; /* Slide in */
+        }
+
+        .user-panel-header {
+            background: #1E40AF;
+            color: #ffffff;
+            padding: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .user-panel-content {
+            padding: 1rem;
+        }
+
+        .user-panel-content a {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            color: #1E40AF;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .user-panel-content a:hover {
+            background: #f1f5f9;
+        }
+
+        .close-btn {
+            background: #e5e7eb;
+            color: #1E40AF;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    {% include "users/nav.html" %}
+
+    <section class="py-12 bg-blue-50 animate-fade-in z-50">
+        <div class="container mx-auto px-6 lg:px-12"><br> <br>
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Pregnancy Journey Month by Month</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <script>
+                    const months = [
+                        { id: "month1", title: "Month 1", desc: "Your baby is just a tiny embryo, and early pregnancy symptoms start to appear." },
+                        { id: "month2", title: "Month 2", desc: "Your baby's heart starts beating, and organs begin to form." },
+                        { id: "month3", title: "Month 3", desc: "Your baby is now a fetus, and morning sickness may continue." },
+                        { id: "month4", title: "Month 4", desc: "You may start feeling the baby's movements as they grow stronger." },
+                        { id: "month5", title: "Month 5", desc: "Your baby develops fingerprints, and their senses begin to sharpen." },
+                        { id: "month6", title: "Month 6", desc: "Your baby’s kicks become stronger, and they can now hear sounds." },
+                        { id: "month7", title: "Month 7", desc: "Your baby can now open their eyes, and their brain is developing rapidly." },
+                        { id: "month8", title: "Month 8", desc: "Your baby is gaining weight quickly, and their lungs are maturing." },
+                        { id: "month9", title: "Month 9", desc: "Your baby is almost ready to be born! They are fully developed and preparing for delivery." }
+                    ];
+                    document.write(months.map(month => `
+                        <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500 cursor-pointer transform transition duration-300 hover:scale-105 hover:shadow-2xl" onclick="openModal('${month.id}')">
+                            <h3 class="text-xl font-semibold text-blue-700">${month.title}</h3>
+                            <p class="text-gray-700 mt-2">${month.desc}</p>
+                        </div>
+                    `).join(""));
+                </script>
+                <br><br>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-12 bg-pink-50 animate-fade-in">
+        <div class="container mx-auto px-6 lg:px-12">
+            <h2 class="text-3xl font-bold text-center text-pink-700 mb-8">Pregnancy Journey Week by Week</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <script>
+                    const weeks = [
+                        { id: "week1", title: "Week 1", desc: "Your pregnancy journey begins! This week marks the first day of your last menstrual cycle." },
+                        { id: "week2", title: "Week 2", desc: "Your body prepares for ovulation, and conception might happen soon!" },
+                        { id: "week3", title: "Week 3", desc: "Fertilization occurs! The tiny embryo starts its journey to the uterus." },
+                        { id: "week4", title: "Week 4", desc: "Your baby is now a tiny ball of cells, and implantation happens in the uterus." },
+                        { id: "week5", title: "Week 5", desc: "The baby’s heart begins to beat, and early pregnancy symptoms may start." },
+                        { id: "week6", title: "Week 6", desc: "Facial features begin developing, and the neural tube closes." },
+                        { id: "week7", title: "Week 7", desc: "Your baby is growing rapidly, with tiny limb buds appearing." },
+                        { id: "week8", title: "Week 8", desc: "Fingers and toes begin forming, and morning sickness may intensify." },
+                        { id: "week9", title: "Week 9", desc: "Your baby is developing muscles and moving more, though you can’t feel it yet!" }
+                        
+
+                    ];
+                    document.write(weeks.map(week => `
+                        <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-pink-500 cursor-pointer transform transition duration-300 hover:scale-105 hover:shadow-2xl" onclick="openModal('${week.id}')">
+                            <h3 class="text-xl font-semibold text-pink-700">${week.title}</h3>
+                            <p class="text-gray-700 mt-2">${week.desc}</p>
+                        </div>
+                    `).join(""));
+                </script>
+                 <div class="text-center mt-6">
+                    <button id="load-more" class="bg-pink-500 text-white px-4 py-2 rounded">Click here to see more weeks</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Modal Structure -->
+    <div id="modal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-lg shadow-lg">
+            <h3 id="modal-title" class="text-2xl font-semibold text-blue-700"></h3>
+            <p id="modal-content" class="text-gray-700 mt-4"></p>
+            <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+    
+    <script>
+        const details = {
+    "month1": "During the first month, your baby is a tiny embryo developing basic structures, and early pregnancy symptoms like nausea and fatigue begin.",
+    "month2": "By the second month, your baby's heart starts beating, and major organs begin forming. You might experience morning sickness and increased fatigue.",
+    "month3": "In the third month, your baby is now officially a fetus with fingers, toes, and facial features forming. You may start feeling a bit more energetic.",
+    "month4": "During the fourth month, your baby’s movements become more noticeable, and their skin starts developing. Your bump may become more visible.",
+    "month5": "In the fifth month, your baby’s senses are developing, and you might feel stronger kicks! A fine layer of hair called lanugo covers their body.",
+    "month6": "By the sixth month, your baby can hear sounds and respond to light! Their skin is becoming less transparent.",
+    "month7": "During the seventh month, your baby gains more fat, and their lungs continue to develop. You may start feeling Braxton Hicks contractions.",
+    "month8": "In the eighth month, your baby is almost fully developed, gaining weight rapidly, and moving a lot! You may notice more discomfort as your belly grows.",
+    "month9": "During the ninth month, your baby is preparing for birth, moving into a head-down position. You may feel more pressure and experience signs of labor.",
+    
+    "week1": "Your pregnancy technically starts from the first day of your last period. There’s no baby yet, but your body is preparing!",
+    "week2": "Ovulation occurs, and if sperm meets egg, conception happens!",
+    "week3": "Fertilization happens, and your baby is just a small group of rapidly dividing cells.",
+    "week4": "Your baby is a blastocyst, implanting into the uterine lining. You might get a positive pregnancy test!",
+    "week5": "The heart starts beating, and the embryo begins to take shape.",
+    "week6": "Your baby’s face is forming, and small buds for arms and legs appear.",
+    "week7": "The baby is growing quickly! Major organs are forming.",
+    "week8": "Your baby now has tiny fingers and toes, and facial features become more distinct.",
+    "week9": "Your baby is moving, though it’s too early to feel! Muscles and joints are developing.",
+    "week10": "Your baby’s organs are now in place and starting to function. Fingernails and hair begin to grow.",
+    "week11": "Your baby is developing reflexes and can now kick and stretch, though you may not feel it yet!",
+    "week12": "Your baby’s fingers and toes are fully formed, and their face looks more human-like.",
+    "week13": "Your baby has fingerprints now! Vocal cords are developing as well.",
+    "week14": "Your baby’s movements are becoming smoother, and they can even suck their thumb!",
+    "week15": "Your baby can sense light and hear muffled sounds from the outside world.",
+    "week16": "You might feel the first tiny kicks! Your baby’s muscles are strengthening.",
+    "week17": "Fat stores are beginning to develop, and your baby’s skeleton is hardening.",
+    "week18": "Your baby’s ears are now fully formed, and they can hear your voice more clearly.",
+    "week19": "Your baby is developing a protective coating called vernix to protect their skin.",
+    "week20": "Halfway there! Your baby is now about the size of a banana and can swallow amniotic fluid.",
+    "week21": "Your baby’s movements are more coordinated, and their digestive system is maturing.",
+    "week22": "Your baby is learning to grab things and developing stronger facial expressions.",
+    "week23": "Lungs are developing rapidly, preparing for breathing outside the womb.",
+    "week24": "Your baby has a sleep-wake cycle and may respond to sounds by moving!",
+    "week25": "Your baby’s skin is becoming less wrinkled as they gain more fat.",
+    "week26": "Your baby’s eyes are starting to open, and they may blink for the first time!",
+    "week27": "Your baby can recognize your voice and respond to touch.",
+    "week28": "Your baby has a good chance of survival if born prematurely now, though they still need more time to develop.",
+    "week29": "Your baby’s bones are fully developed but still soft. Their brain is growing rapidly!",
+    "week30": "Your baby is moving a lot, and you might notice patterns in their activity.",
+    "week31": "Your baby is gaining more fat, and their lungs are nearly mature.",
+    "week32": "Your baby may be in a head-down position, preparing for birth!",
+    "week33": "Your baby’s immune system is developing, and they are getting antibodies from you.",
+    "week34": "Your baby’s skin is smoothing out as they gain more fat for warmth.",
+    "week35": "Your baby’s nervous system is almost fully developed, and they practice breathing movements.",
+    "week36": "Your baby is shedding most of their protective vernix and lanugo hair.",
+    "week37": "Your baby is considered full-term soon! They are just growing and fine-tuning their systems now.",
+    "week38": "Your baby’s organs are fully developed, and they’re getting ready for birth.",
+    "week39": "Your baby is in the final stages of growth, preparing for life outside the womb.",
+    "week40": "It’s time! Your baby is fully developed and ready to be born any day now."
+
+        };
+         let currentIndex = 0;
+        function loadWeeks() {
+            const container = document.getElementById("week-container");
+            for (let i = currentIndex; i < currentIndex + 9 && i < weeks.length; i++) {
+                const week = weeks[i];
+                const div = document.createElement("div");
+                div.className = "bg-white shadow-lg rounded-lg p-6 border-l-4 border-pink-500 cursor-pointer transform transition duration-300 hover:scale-105";
+                div.onclick = () => openModal(week.id);
+                div.innerHTML = `<h3 class="text-xl font-semibold text-pink-700">${week.title}</h3><p class="text-gray-700 mt-2">${week.desc}</p>`;
+                container.appendChild(div);
+            }
+            currentIndex += 9;
+            if (currentIndex >= weeks.length) {
+                document.getElementById("load-more").style.display = "none";
+            }
+        }
+    
+        function openModal(id) {
+            document.getElementById('modal-title').textContent = id.includes('month') ? `Month ${id.slice(-1)}` : `Week ${id.slice(-1)}`;
+            document.getElementById('modal-content').textContent = details[id];
+            document.getElementById('modal').classList.remove('hidden');
+        }
+    
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+    </script>
+    {% include "users/footer.html" %}
+
+</body>
+</html>

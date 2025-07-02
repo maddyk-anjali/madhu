@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care-One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom dropdown styles */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 12rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        /* For large screens, show dropdown on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* For mobile view, make dropdown appear when clicked */
+        .mobile-dropdown {
+            display: none;
+        }
+
+        .mobile-dropdown.active {
+            display: block;
+        }
+
+        /* Hide the desktop nav on mobile screens */
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+
+        /* Show mobile nav on smaller screens */
+        @media (max-width: 767px) {
+            .mobile-nav {
+                display: block;
+            }
+        }
+
+        /* Active link style */
+        .active-link {
+            color: #1E40AF;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* Shadow effect for the navigation bar */
+        .nav-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hover effects for nav links */
+        .nav-link:hover {
+            color: #1E40AF;
+            text-decoration: underline;
+        }
+         /* Sliding panel styles */
+         .user-panel {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Hidden initially */
+            width: 300px;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+            transition: right 0.4s ease-in-out;
+            z-index: 20;
+        }
+
+        .user-panel.open {
+            right: 0; /* Slide in */
+        }
+
+        .user-panel-header {
+            background: #1E40AF;
+            color: #ffffff;
+            padding: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .user-panel-content {
+            padding: 1rem;
+        }
+
+        .user-panel-content a {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            color: #1E40AF;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .user-panel-content a:hover {
+            background: #f1f5f9;
+        }
+
+        .close-btn {
+            background: #e5e7eb;
+            color: #1E40AF;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    {% include "users/nav.html" %}
+    <br><br>
+
+
+    <div class="container mx-auto p-4">
+        <section class="bg-white p-8 rounded-lg shadow-lg transition-opacity opacity-0 animate-fadeIn">
+          <h2 class="text-3xl font-semibold text-center text-indigo-700 mb-6">Pregnancy Due Date Calculator</h2><br>
+      
+          <form class="space-y-6 max-w-xl mx-auto">
+            <div>
+              <label for="last-period" class="block text-sm font-medium text-gray-800">First Day of Last Period</label>
+              <input type="date" id="last-period" class="mt-1 p-4 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 shadow-md" />
+            </div>
+      
+            <div>
+              <label for="cycle-length" class="block text-sm font-medium text-gray-800">Average Cycle Length (in days)</label>
+              <input type="number" id="cycle-length" class="mt-1 p-4 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 shadow-md" placeholder="e.g., 28" />
+            </div>
+      
+            <div class="flex justify-center">
+              <button type="button" onclick="calculateDueDate()" class="mt-6 px-6 py-3 bg-indigo-600 text-white text-lg font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all ease-in-out duration-300">
+                Calculate Due Date
+              </button>
+            </div>
+          </form>
+      
+          <div id="due-date-result" class="mt-6 hidden opacity-0 transition-opacity duration-1000">
+            <h3 class="text-xl font-semibold text-center text-indigo-700">Estimated Due Date</h3>
+            <p id="due-date" class="text-center text-2xl text-gray-900 font-medium mt-4"></p>
+          </div>
+      
+          <div class="mt-8 text-gray-700">
+            <h3 class="text-xl font-semibold text-indigo-700 mb-2">What is a Pregnancy Due Date?</h3>
+            <p>
+              Your estimated due date (EDD) is the date your baby is expected to be born. It is typically calculated by adding 280 days (40 weeks) to the first day of your last menstrual period (LMP). This assumes a regular 28-day menstrual cycle. 
+            </p>
+            <p class="mt-4">
+              It’s important to note that the actual length of a pregnancy can vary from woman to woman. A full-term pregnancy generally lasts anywhere between 37 and 42 weeks, with most babies born between 39 and 41 weeks.
+            </p>
+      
+            <h4 class="mt-6 text-lg font-semibold text-indigo-700">How is the Due Date Calculated?</h4>
+            <p class="mt-2">
+              The most common method to calculate the due date is based on the first day of your last period. Here's how the process typically works:
+            </p>
+            <ul class="list-disc ml-6 mt-2">
+              <li><strong>Step 1:</strong> Determine the first day of your last menstrual period (LMP).</li>
+              <li><strong>Step 2:</strong> Add 280 days (or 9 months and 7 days) to this date. This accounts for the average length of a pregnancy.</li>
+              <li><strong>Step 3:</strong> The result will be your estimated due date (EDD).</li>
+            </ul>
+      
+            <p class="mt-4">
+              Keep in mind that ovulation and conception usually occur 14 days after the first day of your last period. This means that not all women will have a 28-day cycle, and the due date may be adjusted based on individual cycle lengths.
+            </p>
+      
+            <p class="mt-4">
+              For more details about pregnancy, due dates, and what to expect during your pregnancy, visit the <a href="https://www.cdc.gov/pregnancy/index.html" class="text-indigo-600 underline" target="_blank">CDC Pregnancy Website</a>.
+            </p>
+          </div>
+        </section>
+      </div>
+      
+      <script>
+        function calculateDueDate() {
+          const lastPeriod = document.getElementById('last-period').value;
+          const cycleLength = document.getElementById('cycle-length').value;
+      
+          if (!lastPeriod || !cycleLength) {
+            alert("Please fill out both fields.");
+            return;
+          }
+      
+          // Step 1: Get the first day of the last period
+          const firstDayOfLastPeriod = new Date(lastPeriod);
+      
+          // Step 2: Calculate the difference between a 28-day cycle and the user input cycle
+          const cycleDifference = cycleLength - 28;
+      
+          // Step 3: Add the standard 280 days (40 weeks) to the first day of the last period
+          firstDayOfLastPeriod.setDate(firstDayOfLastPeriod.getDate() + 280);
+      
+          // Step 4: Adjust the due date based on the user's cycle length
+          firstDayOfLastPeriod.setDate(firstDayOfLastPeriod.getDate() + cycleDifference);
+      
+          // Convert the due date to dd-mm-yyyy format
+          const day = String(firstDayOfLastPeriod.getDate()).padStart(2, '0');
+          const month = String(firstDayOfLastPeriod.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-indexed
+          const year = firstDayOfLastPeriod.getFullYear();
+          const dueDate = `${day}-${month}-${year}`;
+      
+          // Show the result with animation
+          const dueDateResult = document.getElementById('due-date-result');
+          document.getElementById('due-date').textContent = dueDate;
+          
+          // Apply animation by removing the opacity class
+          dueDateResult.classList.remove('hidden');
+          dueDateResult.classList.add('opacity-100');
+        }
+      </script>
+      
+      <style>
+        /* Animation for fading in */
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      
+        .animate-fadeIn {
+          animation: fadeIn 1s ease-out forwards;
+        }
+      
+        .transition-opacity {
+          transition: opacity 1s ease-in-out;
+        }
+      
+        .opacity-0 {
+          opacity: 0;
+        }
+      
+        .opacity-100 {
+          opacity: 1;
+        }
+      </style>
+      {% include "users/footer.html" %}
+
+</body>
+</html>

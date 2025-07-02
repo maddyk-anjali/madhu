@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anganwadi Portal</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-[#121212] text-white">
+
+    <!-- 🌟 Navigation -->
+    {% include "anganwadi/nav.html" %}
+    <section class="bg-gray-900 py-10 px-5">
+        <div class="max-w-3xl mx-auto bg-gray-800 shadow-lg rounded-none sm:rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-white text-center mb-5">Add Distribution Record</h2>
+            <form id="distributionForm" class="space-y-4">
+                
+                <div>
+                    <label class="block text-gray-300 font-medium">User ID</label>
+                    <input type="number" id="user_id" class="w-full px-3 py-2 bg-gray-700 text-white border rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                
+
+                
+                <div>
+                    <label class="block text-gray-300 font-medium">Type</label>
+                    <select id="type" class="w-full px-3 py-2 bg-gray-700 text-white border rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                        <option value="Vaccine">Vaccine</option>
+                        <option value="Nutrition">Nutrition</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-300 font-medium">Item Name</label>
+                    <input type="text" id="item_name" class="w-full px-3 py-2 bg-gray-700 text-white border rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-300 font-medium">Quantity</label>
+                    <input type="text" id="quantity" class="w-full px-3 py-2 bg-gray-700 text-white border rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-300 font-medium">Unit</label>
+                    <input type="text" id="unit" class="w-full px-3 py-2 bg-gray-700 text-white border rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-300 font-medium">Distribution Date</label>
+                    <input type="date" id="distribution_date" class="w-full px-3 py-2 bg-gray-700 text-white border rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-medium">Status</label>
+                    <select id="status" class="w-full px-3 py-2 bg-gray-700 text-white border rounded-none focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                        <option value="Upcoming">Distributed</option>
+                        <option value="Distributed">Distributed</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-none hover:bg-blue-600 transition">Submit</button>
+            </form>
+        </div>
+    </section>
+    
+    <script>
+        document.getElementById("distributionForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            
+            const formData = {
+                user_id: document.getElementById("user_id").value,
+                type: document.getElementById("type").value,
+                item_name: document.getElementById("item_name").value,
+                quantity: document.getElementById("quantity").value,
+                unit: document.getElementById("unit").value,
+                distribution_date: document.getElementById("distribution_date").value,
+                status: document.getElementById("status").value  // Include the status field
+            };
+            
+            const response = await fetch("/add_distribution", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            alert(result.message || result.error);
+        });
+    </script>
+
+
+
+    <!-- 🌟 Footer -->
+    <footer class="bg-[#121212] text-white text-center py-4">
+        <p>&copy; 2025 Anganwadi Portal. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

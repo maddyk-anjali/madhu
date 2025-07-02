@@ -1,0 +1,118 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pradhan Mantri Matru Vandana Yojana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+    <h1 class="text-3xl font-bold mb-8 text-center">Pradhan Mantri Matru Vandana Yojana (PMMVY)</h1>
+    <div class="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6">
+        <img src="/app/static/images/pic1.jpg" alt="PMMVY" class="w-full h-64 object-cover rounded-md mb-4">
+        <p class="text-gray-700 mb-4">
+            The <strong>Pradhan Mantri Matru Vandana Yojana (PMMVY)</strong> is a maternity benefit program launched by the Government of India. It aims to provide financial assistance of ₹5,000 to first-time mothers in three installments to ensure proper nutrition and reduce maternal mortality.
+        </p>
+        <h2 class="text-xl font-semibold mb-2">Key Features:</h2>
+        <ul class="list-disc list-inside text-gray-700 mb-4">
+            <li>Financial assistance of ₹5,000 in three installments.</li>
+            <li>Encourages institutional deliveries and postnatal care.</li>
+            <li>Aims to improve the health and nutrition of pregnant women.</li>
+        </ul>
+        <h2 class="text-xl font-semibold mb-2">Eligibility Criteria:</h2>
+        <ul class="list-disc list-inside text-gray-700 mb-4">
+            <li>Applicable to first-time mothers.</li>
+            <li>Women should be 19 years or older at the time of pregnancy.</li>
+            <li>Must be registered under the scheme at a government healthcare center.</li>
+        </ul>
+        <button onclick="toggleDetails()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-all duration-300">More Details</button>
+        <p id="more-details" class="text-gray-700 mt-4 hidden">The PMMVY is implemented under the Ministry of Women and Child Development and aims to support maternal health by providing financial benefits during pregnancy.</p>
+    </div>
+    
+    <script>
+        function toggleDetails() {
+            document.getElementById("more-details").classList.toggle("hidden");
+        }
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Schemes for Pregnant Women</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<!-- <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6"> -->
+    <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6 bg-cover bg-center" style="background-image: url('static/images/prag1.jpg');">
+
+    <!-- Navigation Bar -->
+    {% include "users/nav.html" %}
+    <br><br>
+    <h1 class="text-4xl font-extrabold mb-8 text-center text-blue-400">Government Schemes for Pregnant Women</h1>
+    
+    <div class="w-full max-w-4xl bg-white shadow-2xl rounded-lg p-8 mb-6">
+        <h2 class="text-3xl font-bold text-center text-black mb-8">Overview</h2>
+        <p class="text-gray-700 text-lg leading-relaxed">The Government of India has introduced multiple welfare schemes aimed at supporting pregnant women. These initiatives ensure financial assistance, medical checkups, institutional deliveries, and proper nutrition to reduce maternal and infant mortality rates.</p>
+    </div>
+    
+    <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 py-16 mt-8">
+        <a href="PG1" onclick="redirectTo('PG1')" class="bg-white shadow-lg rounded-lg p-6 cursor-pointer transform transition-transform hover:scale-105 hover:bg-blue-50 block">
+            <h2 class="text-3xl font-bold text-center text-grey-300 mb-8">Pradhan Mantri Matru Vandana Yojana (PMMVY)</h2>
+        </a>
+        <a href="PG2" onclick="redirectTo('PG2')" class="bg-white shadow-lg rounded-lg p-6 cursor-pointer transform transition-transform hover:scale-105 hover:bg-blue-50 block">
+            <h2 class="text-3xl font-bold text-center text-grey-700 mb-8">Janani Shishu Suraksha Karyakrama (JSSK)</h2>
+        </a>
+        <a href="PG3" onclick="redirectTo('PG3')" class="bg-white shadow-lg rounded-lg p-6 cursor-pointer transform transition-transform hover:scale-105 hover:bg-blue-50 block">
+            <h2 class="text-3xl font-bold text-center text-grey-500 mb-8">Janani Suraksha Yojana(JSY)</h2>
+        </a>
+        <a href="PG4" onclick="redirectTo('PG4')" class="bg-white shadow-lg rounded-lg p-6 cursor-pointer transform transition-transform hover:scale-105 hover:bg-blue-50 block">
+            <h2 class="text-3xl font-bold text-center text-grey-100 mb-8">Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)</h2>
+        </a>
+
+    </div>
+    
+    <div id="scheme-details" class="w-full max-w-4xl bg-white shadow-2xl rounded-lg p-8 mt-6 hidden">
+        <img id="scheme-image" src="" alt="Scheme Image" class="w-full h-80 object-cover rounded-md mb-6">
+        <h2 id="scheme-title" class="text-3xl font-bold mb-4 text-gray-800"></h2>
+        <p id="scheme-description" class="text-gray-700 text-lg leading-relaxed"></p>
+    </div>
+    
+    <script>
+        const schemes = {
+            pmmvy: {
+                title: "Pradhan Mantri Matru Vandana Yojana (PMMVY) py-10 mt-8",
+                description: "This scheme provides financial assistance of ₹5,000 in three installments to first-time mothers to ensure proper nutrition and maternal healthcare.",
+                image: "/app/static/images/pic1.jpg"
+            },
+            jsy: {
+                title: "Janani Suraksha Yojana (JSY) py-10 mt-8",
+                description: "Aims to reduce maternal mortality by promoting institutional deliveries with financial incentives. It focuses on improving access to skilled birth attendants.",
+                image: "https://via.placeholder.com/400"
+            },
+            pmsma: {
+                title: "Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA) py-10 mt-8",
+                description: "Provides free antenatal checkups on the 9th of every month at government healthcare centers, ensuring timely medical supervision for pregnant women.",
+                image: "https://via.placeholder.com/400"
+            },
+            igmsy: {
+                title: "Indira Gandhi Matritva Sahyog Yojana (IGMSY) py-10 mt-8",
+                description: "A conditional cash transfer scheme for pregnant and lactating women to improve their health and nutrition. Women receive cash benefits to ensure better maternal care.",
+                image: "https://via.placeholder.com/400"
+            }
+        };
+        
+        function redirectTo(schemeKey) {
+            const scheme = schemes[schemeKey];
+            document.getElementById("scheme-title").innerText = scheme.title;
+            document.getElementById("scheme-description").innerText = scheme.description;
+            document.getElementById("scheme-image").src = scheme.image;
+            document.getElementById("scheme-details").classList.remove("hidden");
+        }
+    </script>
+    
+</body>
+</html>
+

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mother Card Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</head>
+<br>
+<br>
+<br>
+<body class="bg-gray-100 text-gray-900 p-6">
+    <!-- Navigation -->
+    {% include "users/nav.html" %}
+
+    <div class="max-w-5xl mx-auto bg-white p-6 shadow-lg rounded-lg">
+        <h2 class="text-3xl font-bold text-center text-teal-600 mb-6 flex items-center justify-center">
+            <i class="fas fa-file-alt mr-2"></i> Mother Card Report
+        </h2>
+
+        {% if report %}
+        <div id="reportSection" class="mt-6 border border-gray-300 p-6 rounded-lg bg-gray-50 shadow-md">
+            <h3 class="text-xl font-bold text-center text-teal-700 mb-4">Report Details</h3>
+            
+            <div class="space-y-6">
+                <!-- Personal Information -->
+                <div class="p-4 border border-gray-200 rounded-lg bg-white shadow">
+                    <h4 class="text-lg font-semibold text-teal-600 mb-3"><i class="fas fa-user mr-2"></i> Personal Information</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for key in ['id', 'mother_name', 'husband_name', 'last_name', 'date_of_birth', 'aadhar_number'] %}
+                        {% if key in report %}
+                        <div class="p-3 border border-gray-300 rounded bg-gray-50 shadow-sm">
+                            <span class="text-sm font-semibold text-teal-700">{{ key.replace("_", " ").upper() }}:</span>
+                            <span class="text-gray-800 font-medium">{{ report[key] if report[key] else "N/A" }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="p-4 border border-gray-200 rounded-lg bg-white shadow">
+                    <h4 class="text-lg font-semibold text-teal-600 mb-3"><i class="fas fa-phone mr-2"></i> Contact Information</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for key in ['phone_number', 'email', 'address', 'district', 'taluk'] %}
+                        {% if key in report %}
+                        <div class="p-3 border border-gray-300 rounded bg-gray-50 shadow-sm">
+                            <span class="text-sm font-semibold text-teal-700">{{ key.replace("_", " ").upper() }}:</span>
+                            <span class="text-gray-800 font-medium">{{ report[key] if report[key] else "N/A" }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Health Details -->
+                <div class="p-4 border border-gray-200 rounded-lg bg-white shadow">
+                    <h4 class="text-lg font-semibold text-teal-600 mb-3"><i class="fas fa-heartbeat mr-2"></i> Health Details</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for key in ['blood_group', 'height_cm', 'weight_kg', 'number_of_pregnancies'] %}
+                        {% if key in report %}
+                        <div class="p-3 border border-gray-300 rounded bg-gray-50 shadow-sm">
+                            <span class="text-sm font-semibold text-teal-700">{{ key.replace("_", " ").upper() }}:</span>
+                            <span class="text-gray-800 font-medium">{{ report[key] if report[key] else "N/A" }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Pregnancy & Checkups -->
+                <div class="p-4 border border-gray-200 rounded-lg bg-white shadow">
+                    <h4 class="text-lg font-semibold text-teal-600 mb-3"><i class="fas fa-baby mr-2"></i> Pregnancy & Checkups</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for key in ['expected_delivery_date', 'first_trimester_checkup', 'second_trimester_checkup', 'third_trimester_checkup', 'delivery_date', 'delivery_hospital'] %}
+                        {% if key in report %}
+                        <div class="p-3 border border-gray-300 rounded bg-gray-50 shadow-sm">
+                            <span class="text-sm font-semibold text-teal-700">{{ key.replace("_", " ").upper() }}:</span>
+                            <span class="text-gray-800 font-medium">{{ report[key] if report[key] else "N/A" }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Vaccinations -->
+                <div class="p-4 border border-gray-200 rounded-lg bg-white shadow">
+                    <h4 class="text-lg font-semibold text-teal-600 mb-3"><i class="fas fa-syringe mr-2"></i> Vaccinations</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for key in ['tetanus_vaccine', 'iron_folic_acid_supplements', 'other_vaccinations'] %}
+                        {% if key in report %}
+                        <div class="p-3 border border-gray-300 rounded bg-gray-50 shadow-sm">
+                            <span class="text-sm font-semibold text-teal-700">{{ key.replace("_", " ").upper() }}:</span>
+                            <span class="text-gray-800 font-medium">{{ report[key] if report[key] else "N/A" }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Child Details -->
+                <div class="p-4 border border-gray-200 rounded-lg bg-white shadow">
+                    <h4 class="text-lg font-semibold text-teal-600 mb-3"><i class="fas fa-child mr-2"></i> Child Details</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for key in ['child_name', 'child_gender', 'child_weight_kg'] %}
+                        {% if key in report %}
+                        <div class="p-3 border border-gray-300 rounded bg-gray-50 shadow-sm">
+                            <span class="text-sm font-semibold text-teal-700">{{ key.replace("_", " ").upper() }}:</span>
+                            <span class="text-gray-800 font-medium">{{ report[key] if report[key] else "N/A" }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Verification & Status -->
+                <div class="p-4 border border-gray-200 rounded-lg bg-white shadow">
+                    <h4 class="text-lg font-semibold text-teal-600 mb-3"><i class="fas fa-check-circle mr-2"></i> Verification & Status</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for key in ['status', 'verified_by', 'verification_date', 'created_at', 'userid', 'terms_agreed'] %}
+                        {% if key in report %}
+                        <div class="p-3 border border-gray-300 rounded bg-gray-50 shadow-sm">
+                            <span class="text-sm font-semibold text-teal-700">{{ key.replace("_", " ").upper() }}:</span>
+                            <span class="text-gray-800 font-medium">{{ report[key] if report[key] else "N/A" }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-center text-red-500 font-bold mt-6">No report found for your account.</p>
+        {% endif %}
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareOne - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function closeSidebar(event) {
+            let sidebar = document.getElementById('sidebar');
+            if (!sidebar.contains(event.target) && !document.getElementById('menu-toggle-btn').contains(event.target)) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+        function confirmLogout() {
+            if (confirm("Are you sure you want to logout?")) {
+                window.location.href = "/admin/logout";
+            }
+        }
+        document.addEventListener('click', closeSidebar);
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-blue-900 text-white p-5 fixed h-full transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0">
+            <h1 class="text-2xl font-bold mb-6">CareOne</h1>
+            <nav>
+                <a href="dashboard" class="block py-2 px-4 hover:bg-blue-700 rounded">Dashboard</a>
+                <a href="add_staff" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Add Staff</a>
+                <a href="vaccines" class="block py-2 px-4 bg-blue-700 rounded mt-2">Vaccine Updates</a>
+                <a href="mother" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Mother Card</a>
+                <a href="nutrition" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Nutritions</a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col md:ml-64">
+            <!-- Header Section -->
+            <header class="bg-white shadow p-4 flex justify-between items-center">
+                <button id="menu-toggle-btn" class="md:hidden text-blue-900 focus:outline-none" onclick="toggleSidebar()">
+                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="9" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="11" y2="18"></line>
+                    </svg>
+                </button>
+                <h2 class="text-2xl font-semibold">Dashboard</h2>
+                <div class="flex items-center space-x-4">
+                    <input type="text" placeholder="Search..." class="p-2 border rounded w-1/3">
+                    <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        Logout
+                    </button>
+                </div>
+            </header><br>
+            <div class="container mx-auto p-6">
+                <div class="overflow-x-auto bg-white shadow-md rounded-lg border border-gray-200">
+                    <table class="w-full border-collapse">
+                        <thead id="tableHeader" class="bg-blue-500 text-white text-sm font-semibold">
+                            <tr>
+                                <th class="p-3 text-left">Staff Name</th>
+                                <th class="p-3 text-left">Center Name</th>
+                                <th class="p-3 text-left">Request Type</th>
+                                <th class="p-3 text-left">Item Name</th>
+                                <th class="p-3 text-left">Quantity</th>
+                                <th class="p-3 text-left">Status</th>
+                                <th class="p-3 text-left">Update Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestTable" class="text-gray-700 text-sm">
+                            <tr>
+                                <td colspan="7" class="p-4 text-center text-gray-500">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <script>
+                async function fetchRequests() {
+                    try {
+                        const response = await fetch("http://127.0.0.1:8000/requests_list");
+                        let data = await response.json();
+                
+                        if (!data.length) {
+                            document.getElementById("requestTable").innerHTML = 
+                                `<tr><td colspan="7" class="p-4 text-center text-gray-500">No requests found</td></tr>`;
+                            return;
+                        }
+                
+                        // Filter only vaccine requests
+                        data = data.filter(req => req.request_type === "Vaccine");
+                
+                        // Sort so 'Pending' requests appear first
+                        data.sort((a, b) => (a.request_status === "Pending" ? -1 : 1));
+                
+                        if (!data.length) {
+                            document.getElementById("requestTable").innerHTML = 
+                                `<tr><td colspan="7" class="p-4 text-center text-gray-500">No vaccine requests found</td></tr>`;
+                            return;
+                        }
+                
+                        // Generate Table Rows
+                        let tableBody = data.map(req => {
+                            let dropdown = `
+                                <select class="px-2 py-1 border rounded" onchange="updateStatus(${req.request_id}, this.value)">
+                                    <option value="Pending" ${req.request_status === "Pending" ? "selected" : ""}>Pending</option>
+                                    <option value="Approved" ${req.request_status === "Approved" ? "selected" : ""}>Approved</option>
+                                    <option value="Rejected" ${req.request_status === "Rejected" ? "selected" : ""}>Rejected</option>
+                                </select>`;
+                            
+                            return `
+                                <tr class="border-b hover:bg-gray-100">
+                                    <td class="p-3">${req.staff_name}</td>
+                                    <td class="p-3">${req.center_name}</td>
+                                    <td class="p-3">${req.request_type}</td>
+                                    <td class="p-3">${req.item_name}</td>
+                                    <td class="p-3">${req.quantity} ${req.unit}</td>
+                                    <td class="p-3 font-semibold ${req.request_status === 'Pending' ? 'text-orange-500' : req.request_status === 'Approved' ? 'text-green-600' : 'text-red-500'}">
+                                        ${req.request_status}
+                                    </td>
+                                    <td class="p-3">${dropdown}</td>
+                                </tr>`;
+                        }).join("");
+                
+                        document.getElementById("requestTable").innerHTML = tableBody;
+                
+                    } catch (error) {
+                        console.error("Error fetching requests:", error);
+                    }
+                }
+                
+                fetchRequests();
+                
+                async function updateStatus(requestId, newStatus) {
+                    try {
+                        const response = await fetch(`http://127.0.0.1:8000/update_vaccine_status/${requestId}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ request_status: newStatus }),
+                        });
+                
+                        if (response.ok) {
+                            alert("Status updated successfully!");
+                            fetchRequests(); // Refresh the table
+                        } else {
+                            const errorData = await response.json();
+                            alert(`Error: ${errorData.detail}`);
+                        }
+                    } catch (error) {
+                        console.error("Error updating status:", error);
+                        alert("Failed to update status. Try again!");
+                    }
+                }
+                
+            </script>
+            
+        
+            <div class="max-w-6xl mx-auto bg-white shadow-xl rounded-xl p-8">
+                <h2 class="text-4xl font-extrabold text-gray-900 mb-6 text-center">Vaccine Management</h2>
+            
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Left Side: Add Vaccine Form -->
+                    <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Add Vaccine</h3>
+            
+                        <form id="vaccineForm" class="space-y-5">
+                            <input type="text" id="vaccineName" placeholder="Vaccine Name" class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-600 outline-none" required>
+            
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="number" id="minAge" placeholder="Min Age" class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-600 outline-none" required>
+                                <input type="number" id="maxAge" placeholder="Max Age (Optional)" class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-600 outline-none">
+                            </div>
+            
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="date" id="manufacturedDate" class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-600 outline-none" required>
+                                <input type="date" id="expiryDate" class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-600 outline-none" required>
+                            </div>
+            
+                            <input type="number" id="quantity" placeholder="Quantity" class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-600 outline-none" required>
+            
+                            <!-- Availability Dropdown -->
+                            <div>
+                                <label for="availability" class="block text-lg font-semibold text-gray-700 mb-1">Availability</label>
+                                <select id="availability" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none">
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+            
+                            <p id="errorMessage" class="text-red-600 text-sm"></p>
+            
+                            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all duration-300 shadow-md">
+                                Add Vaccine
+                            </button>
+                        </form>
+                    </div>
+            
+                    <!-- Right Side: Vaccine List -->
+                    <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Vaccine List</h3>
+                    
+                        <div class="overflow-x-auto">
+                            <table class="w-full border border-gray-300 rounded-lg shadow-md">
+                                <thead>
+                                    <tr class="bg-blue-600 text-white text-lg">
+                                        <th class="border p-3">Vaccine Name</th>
+                                        <th class="border p-3">Available</th>
+                                        <th class="border p-3">Min Age</th>
+                                        <th class="border p-3">Max Age</th>
+                                        <th class="border p-3">Manufactured Date</th>
+                                        <th class="border p-3">Expiry Date</th>
+                                        <th class="border p-3">Quantity</th>
+                                        <th class="border p-3">Actions</th> <!-- New Column -->
+                                    </tr>
+                                </thead>
+                                <tbody id="vaccineTable" class="text-gray-800 text-center">
+                                    <tr>
+                                        <td colspan="8" class="text-center p-4 text-gray-500">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <style>
+                        /* Responsive Table */
+                        @media (max-width: 768px) {
+                            table {
+                                font-size: 14px;
+                            }
+                            .action-btn {
+                                padding: 6px 10px;
+                                font-size: 12px;
+                            }
+                        }
+                    </style>
+                    
+                </div>
+            </div>
+            
+            <script>
+                document.getElementById("vaccineForm").addEventListener("submit", async function(event) {
+                    event.preventDefault();
+            
+                    let vaccineName = document.getElementById("vaccineName").value.trim();
+                    let minAge = parseInt(document.getElementById("minAge").value);
+                    let maxAge = document.getElementById("maxAge").value ? parseInt(document.getElementById("maxAge").value) : null;
+                    let manufacturedDate = document.getElementById("manufacturedDate").value;
+                    let expiryDate = document.getElementById("expiryDate").value;
+                    let quantity = parseInt(document.getElementById("quantity").value);
+            
+                    // ✅ Convert "Yes" to true and "No" to false
+                    let availability = document.getElementById("availability").value === "true";
+            
+                    let errorMessage = document.getElementById("errorMessage");
+                    errorMessage.innerText = ""; // Clear previous errors
+            
+                    // **Validation checks**
+                    if (!vaccineName) {
+                        errorMessage.innerText = "Vaccine name is required.";
+                        return;
+                    }
+                    if (isNaN(quantity) || quantity <= 0) {
+                        errorMessage.innerText = "Quantity must be a positive number.";
+                        return;
+                    }
+                    if (maxAge !== null && maxAge < minAge) {
+                        errorMessage.innerText = "Max Age cannot be less than Min Age.";
+                        return;
+                    }
+                    if (new Date(expiryDate) <= new Date(manufacturedDate)) {
+                        errorMessage.innerText = "Expiry Date must be later than Manufactured Date.";
+                        return;
+                    }
+            
+                    let vaccineData = {
+                        vaccine_name: vaccineName,
+                        availability: availability,  // ✅ Sending true/false instead of "yes"/"no"
+                        min_age: minAge,
+                        max_age: maxAge,
+                        manufactured_date: manufacturedDate,
+                        expiry_date: expiryDate,
+                        quantity: quantity
+                    };
+            
+                    try {
+                        let response = await fetch("/vaccines/add", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(vaccineData)
+                        });
+            
+                        let result = await response.json();
+                        if (response.ok) {
+                            alert("Vaccine added successfully!");
+                            fetchVaccines();
+                            document.getElementById("vaccineForm").reset(); // Clear form
+                        } else {
+                            alert("Error: " + (result.detail || "Unknown error"));
+                        }
+                    } catch (error) {
+                        console.error("Error adding vaccine:", error);
+                    }
+                });           
+                
+                
+                
+                // **Function to fetch vaccines and populate the table**
+                async function fetchVaccines() {
+                    try {
+                        let response = await fetch("/vaccines");
+                        if (!response.ok) {
+                            throw new Error("Failed to fetch vaccine data.");
+                        }
+                        
+                        let data = await response.json();
+                        let tableBody = document.getElementById("vaccineTable");
+                        tableBody.innerHTML = "";
+                
+                        data.forEach(vaccine => {
+                            let row = `
+                                <tr>
+                                    <td class="border p-2 text-center">${vaccine.vaccine_name}</td>
+                                    <td class="border p-2 text-center">${vaccine.availability ? "Yes" : "No"}</td>
+                                    <td class="border p-2 text-center">${vaccine.min_age}</td>
+                                    <td class="border p-2 text-center">${vaccine.max_age || "N/A"}</td>
+                                    <td class="border p-2 text-center">${vaccine.manufactured_date}</td>
+                                    <td class="border p-2 text-center">${vaccine.expiry_date || "N/A"}</td>
+                                    <td class="border p-2 text-center">${vaccine.quantity}</td>
+                                    <td class="border p-2 text-center">
+                                        <button class="bg-yellow-500 text-white px-3 py-1 rounded" onclick="editVaccine('${vaccine.vaccine_name}')">Edit</button>
+                                        <button class="bg-red-600 text-white px-3 py-1 rounded" onclick="deleteVaccine('${vaccine.vaccine_name}')">Delete</button>
+                                    </td>
+                                </tr>
+                            `;
+                            tableBody.innerHTML += row;
+                        });
+                
+                    } catch (error) {
+                        console.error("Error fetching vaccines:", error);
+                        document.getElementById("errorMessage").innerText = "Error loading vaccines.";
+                    }
+                }
+                
+
+                async function deleteVaccine(vaccineName) {
+                    if (!confirm(`Are you sure you want to delete ${vaccineName}?`)) return;
+                
+                    try {
+                        let response = await fetch(`/vaccines/delete/${vaccineName}`, { method: "DELETE" });
+                
+                        if (response.ok) {
+                            alert("Vaccine deleted successfully!");
+                            fetchVaccines(); // Refresh the table
+                        } else {
+                            let result = await response.json();
+                            alert("Error: " + (result.detail || "Failed to delete vaccine"));
+                        }
+                    } catch (error) {
+                        console.error("Error deleting vaccine:", error);
+                    }
+                }
+
+                function editVaccine(vaccineName) {
+                    let newQuantity = prompt(`Enter new quantity for ${vaccineName}:`);
+                    if (!newQuantity || isNaN(newQuantity) || newQuantity <= 0) {
+                        alert("Invalid quantity!");
+                        return;
+                    }
+                
+                    let vaccineData = { quantity: parseInt(newQuantity) };
+                
+                    fetch(`/vaccines/update/${vaccineName}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(vaccineData)
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.message) {
+                            alert("Vaccine updated successfully!");
+                            fetchVaccines();
+                        } else {
+                            alert("Error: " + (result.detail || "Failed to update vaccine"));
+                        }
+                    })
+                    .catch(error => console.error("Error updating vaccine:", error));
+                }
+                
+                
+                // **Load vaccines on page load**
+                window.onload = fetchVaccines;
+                
+            </script>
+
+        </div>
+</body>
+</html>

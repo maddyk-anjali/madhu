@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Request Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0b0c10] text-white">
+
+    <!-- 🌟 Navbar -->
+    {% include "anganwadi/nav.html" %}
+
+    <div class="max-w-2xl mx-auto mt-12 p-8 bg-[#1f2937] shadow-xl rounded-lg border border-gray-700">
+        <h2 class="text-2xl font-bold text-[#66FCF1] mb-6 border-b border-gray-600 pb-2 text-center">
+            Request Vaccines / Nutrition
+        </h2>
+
+        <form id="requestForm" class="space-y-5">
+            <!-- Staff Name -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-300">Staff Name</label>
+                <input type="text" id="staff_name" placeholder="Enter staff name"
+                    class="w-full p-3 bg-[#374151] text-white border border-gray-600 rounded-md focus:ring-2 focus:ring-[#66FCF1] outline-none"
+                    required>
+            </div>
+
+            <!-- Center Name -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-300">Center Name</label>
+                <input type="text" id="center_name" placeholder="Enter center name"
+                    class="w-full p-3 bg-[#374151] text-white border border-gray-600 rounded-md focus:ring-2 focus:ring-[#66FCF1] outline-none"
+                    required>
+            </div>
+
+            <!-- Request Type -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-300">Request Type</label>
+                <select id="request_type"
+                    class="w-full p-3 bg-[#374151] text-white border border-gray-600 rounded-md focus:ring-2 focus:ring-[#66FCF1] outline-none"
+                    required>
+                    <option value="" disabled selected>Select Type</option>
+                    <option value="Vaccine">Vaccine</option>
+                    <option value="Nutrition">Nutrition</option>
+                </select>
+            </div>
+
+            <!-- Item Name -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-300">Item Name</label>
+                <input type="text" id="item_name" placeholder="Enter item name (e.g., Polio Vaccine, Rice Packets)"
+                    class="w-full p-3 bg-[#374151] text-white border border-gray-600 rounded-md focus:ring-2 focus:ring-[#66FCF1] outline-none"
+                    required>
+            </div>
+
+            <!-- Quantity & Unit -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300">Quantity</label>
+                    <input type="number" id="quantity" placeholder="Enter quantity" min="1"
+                        class="w-full p-3 bg-[#374151] text-white border border-gray-600 rounded-md focus:ring-2 focus:ring-[#66FCF1] outline-none"
+                        required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300">Unit</label>
+                    <input type="text" id="unit" placeholder="kg, doses, packets"
+                        class="w-full p-3 bg-[#374151] text-white border border-gray-600 rounded-md focus:ring-2 focus:ring-[#66FCF1] outline-none"
+                        required>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-300">Description</label>
+                <textarea id="description" placeholder="Enter details about the request"
+                    class="w-full p-3 bg-[#374151] text-white border border-gray-600 rounded-md focus:ring-2 focus:ring-[#66FCF1] outline-none"
+                    required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit"
+                class="w-full bg-[#66FCF1] text-gray-900 p-3 rounded-md hover:bg-[#45a29e] transition duration-300 font-bold uppercase tracking-wide">
+                Submit Request
+            </button>
+        </form>
+
+        <!-- Success/Error Message -->
+        <div id="message" class="mt-4 text-center font-semibold"></div>
+    </div>
+
+    <script>
+        document.getElementById("requestForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const requestData = {
+                staff_name: document.getElementById("staff_name").value,
+                center_name: document.getElementById("center_name").value,
+                request_type: document.getElementById("request_type").value,
+                item_name: document.getElementById("item_name").value,
+                quantity: parseInt(document.getElementById("quantity").value),
+                unit: document.getElementById("unit").value,
+                description: document.getElementById("description").value
+            };
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/request", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById("message").innerHTML = `<p class="text-green-400">${result.message}</p>`;
+                    document.getElementById("requestForm").reset(); // Clear form on success
+                } else {
+                    document.getElementById("message").innerHTML = `<p class="text-red-500">Error: ${result.detail}</p>`;
+                }
+            } catch (error) {
+                document.getElementById("message").innerHTML = `<p class="text-red-500">Request failed. Try again later.</p>`;
+            }
+        });
+    </script>
+    
+    <div class="max-w-6xl mx-auto bg-gray-900 shadow-lg rounded-lg p-6">
+        <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">Anganwadi Requests</h2>
+    
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-700 rounded-lg overflow-hidden shadow-md">
+                <thead id="tableHeader" class="bg-teal-500 text-white text-lg">
+                </thead>
+                <tbody id="requestTable" class="text-gray-300 text-center">
+                    <tr>
+                        <td colspan="12" class="text-center p-4 text-gray-500">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        async function fetchRequests() {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/requests_list");
+                const data = await response.json();
+    
+                if (!data.length) {
+                    document.getElementById("requestTable").innerHTML = 
+                        `<tr><td colspan="12" class="text-center p-4 text-gray-500">No data found</td></tr>`;
+                    return;
+                }
+    
+                // Remove admin response column
+                const headers = Object.keys(data[0]).filter(h => h !== "admin_response");
+                headers.push("Actions"); // Add a column for delete buttons
+    
+                let headerRow = `<tr>` + headers.map(h => 
+                    `<th class="border border-gray-700 p-3 min-w-[150px]">${h.replace(/_/g, " ")}</th>`).join("") + `</tr>`;
+                document.getElementById("tableHeader").innerHTML = headerRow;
+    
+                // Generate Table Rows with status color and delete button
+                let tableBody = data.map(req => {
+                    let row = `<tr class="border-b border-gray-700 hover:bg-gray-800" id="row-${req.request_id}">` + 
+                        headers.map(h => {
+                            if (h === "Actions") {
+                                return `<td class="border border-gray-700 p-3">
+                                    <button onclick="deleteRequest(${req.request_id})" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+                                </td>`;
+                            }
+    
+                            let value = req[h]?.toString().trim(); // Ensure value is a string and trimmed
+                            
+                            // Apply status-based colors
+                            if (h.toLowerCase() === "request_status") {
+                                let lowerValue = value.toLowerCase();
+                                if (lowerValue === "approved") {
+                                    value = `<span class='text-green-400 font-semibold'>${value}</span>`;
+                                } else if (lowerValue === "pending") {
+                                    value = `<span class='text-yellow-400 font-semibold'>${value}</span>`;
+                                } else {
+                                    value = `<span class='text-red-400 font-semibold'>${value}</span>`;
+                                }
+                            }
+    
+                            return `<td class="border border-gray-700 p-3 min-w-[150px]">${value}</td>`;
+                        }).join("") + 
+                    `</tr>`;
+                    return row;
+                }).join("");
+    
+                document.getElementById("requestTable").innerHTML = tableBody;
+    
+            } catch (error) {
+                console.error("Error fetching requests:", error);
+            }
+        }
+    
+        async function deleteRequest(requestId) {
+            if (!confirm("Are you sure you want to delete this request?")) return;
+    
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/delete_request/${requestId}`, {
+                    method: "DELETE",
+                });
+    
+                if (response.ok) {
+                    document.getElementById(`row-${requestId}`).remove();
+                    alert("Request deleted successfully!");
+                } else {
+                    alert("Failed to delete request.");
+                }
+            } catch (error) {
+                console.error("Error deleting request:", error);
+                alert("An error occurred while deleting the request.");
+            }
+        }
+    
+        fetchRequests();
+    </script>
+    
+    
+    
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mother Card - Government Health Record</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <!-- Mother Card -->
+        <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-300">
+            <div class="text-center border-b pb-4">
+                <h1 class="text-3xl font-bold text-gray-800">Government of India</h1>
+                <h2 class="text-xl text-gray-700">Ministry of Health & Family Welfare</h2>
+                <h3 class="text-lg font-semibold text-gray-600 mt-2">Mother & Child Vaccination Card</h3>
+            </div>
+
+            <!-- Mother's Details -->
+            <div class="mt-6">
+                <h4 class="text-lg font-semibold text-gray-700">Mother’s Details</h4>
+                <div class="grid grid-cols-2 gap-4 mt-2 border p-4 bg-gray-50">
+                    <p><strong>Name:</strong> Anjali</p>
+                    <p><strong>Date of Birth:</strong> 12 March 1995</p>
+                    <p><strong>Email:</strong> anjali@gmail.com</p>
+                    <p><strong>Contact:</strong> +91 9876543210</p>
+                    <p><strong>Address:</strong> Mumbai, Maharashtra</p>
+                    <p><strong>Mother Card ID:</strong> MC-2025-9876</p>
+                </div>
+            </div>
+
+            <!-- Vaccination Details -->
+            <div class="mt-6">
+                <h4 class="text-lg font-semibold text-gray-700">Vaccination Tracking</h4>
+                <table class="w-full mt-2 border-collapse border border-gray-300">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="border border-gray-300 px-4 py-2">Vaccine Name</th>
+                            <th class="border border-gray-300 px-4 py-2">Date Administered</th>
+                            <th class="border border-gray-300 px-4 py-2">Next Due Date</th>
+                            <th class="border border-gray-300 px-4 py-2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">TDAP</td>
+                            <td class="border border-gray-300 px-4 py-2">Jan 10, 2025</td>
+                            <td class="border border-gray-300 px-4 py-2">-</td>
+                            <td class="border border-gray-300 px-4 py-2 text-green-600 font-semibold">Completed</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">Flu Vaccine</td>
+                            <td class="border border-gray-300 px-4 py-2">Feb 05, 2025</td>
+                            <td class="border border-gray-300 px-4 py-2">Feb 05, 2026</td>
+                            <td class="border border-gray-300 px-4 py-2 text-green-600 font-semibold">Completed</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">Hepatitis B</td>
+                            <td class="border border-gray-300 px-4 py-2">-</td>
+                            <td class="border border-gray-300 px-4 py-2">March 15, 2025</td>
+                            <td class="border border-gray-300 px-4 py-2 text-yellow-600 font-semibold">Due Soon</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">MMR</td>
+                            <td class="border border-gray-300 px-4 py-2">-</td>
+                            <td class="border border-gray-300 px-4 py-2">May 20, 2025</td>
+                            <td class="border border-gray-300 px-4 py-2 text-red-600 font-semibold">Pending</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Vaccine Summary -->
+            <div class="mt-6 grid grid-cols-3 gap-4">
+                <div class="bg-green-100 p-4 rounded-lg text-center shadow">
+                    <h4 class="text-xl font-semibold text-green-700">Total Vaccines</h4>
+                    <p class="text-2xl font-bold">4</p>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded-lg text-center shadow">
+                    <h4 class="text-xl font-semibold text-yellow-700">Due Soon</h4>
+                    <p class="text-2xl font-bold">1</p>
+                </div>
+                <div class="bg-red-100 p-4 rounded-lg text-center shadow">
+                    <h4 class="text-xl font-semibold text-red-700">Pending</h4>
+                    <p class="text-2xl font-bold">1</p>
+                </div>
+            </div>
+
+            <!-- Download Button -->
+            <div class="text-center mt-6">
+                <button onclick="generatePDF()" class="bg-blue-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-blue-600 transition">
+                    Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS for PDF Generation -->
+    <script>
+        function generatePDF() {
+            alert("PDF Generation will be implemented here!");
+            // You can integrate jsPDF or another library to generate the actual PDF
+        }
+    </script>
+</body>
+</html>

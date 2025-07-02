@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareOne - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function closeSidebar(event) {
+            let sidebar = document.getElementById('sidebar');
+            if (!sidebar.contains(event.target) && !document.getElementById('menu-toggle-btn').contains(event.target)) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+        function confirmLogout() {
+            if (confirm("Are you sure you want to logout?")) {
+                window.location.href = "/admin/logout";
+            }
+        }
+        document.addEventListener('click', closeSidebar);
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-blue-900 text-white p-5 fixed h-full transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0">
+            <h1 class="text-2xl font-bold mb-6">CareOne</h1>
+            <nav>
+                <a href="dashboard" class="block py-2 px-4 hover:bg-blue-700 rounded">Dashboard</a>
+                <a href="add_staff" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Add Staff</a>
+                <a href="vaccines" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Vaccine Updates</a>
+                <a href="mother" class="block py-2 px-4 bg-blue-700 rounded mt-2">Mother Card</a>
+                <a href="nutrition" class="block py-2 px-4 hover:bg-blue-700 rounded mt-2">Nutritions</a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col md:ml-64">
+            <!-- Header Section -->
+            <header class="bg-white shadow p-4 flex justify-between items-center">
+                <button id="menu-toggle-btn" class="md:hidden text-blue-900 focus:outline-none" onclick="toggleSidebar()">
+                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="9" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="11" y2="18"></line>
+                    </svg>
+                </button>
+                <h2 class="text-2xl font-semibold">Dashboard</h2>
+                <div class="flex items-center space-x-4">
+                    <input type="text" placeholder="Search..." class="p-2 border rounded w-1/3">
+                    <button onclick="confirmLogout()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        Logout
+                    </button>
+                </div>
+            </header>
+            <div class="bg-white p-4 rounded-lg shadow-md" style="max-height: 400px; overflow-y: auto;">
+        </div>
+        
+        <div class="bg-gray-100 p-4 shadow-md mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Status Filter -->
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Filter by Status:</label>
+                    <select id="statusFilter" class="p-2 border w-full">
+                        <option value="">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+        
+                <!-- District Filter -->
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Filter by District:</label>
+                    <select id="districtFilter" class="p-2 border w-full">
+                        <option value="">All</option>
+                    </select>
+                </div>
+        
+                <!-- Taluk Filter -->
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Filter by Taluk:</label>
+                    <select id="talukFilter" class="p-2 border w-full">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                
+            </div>
+        </div>
+
+
+        <div id="motherCardContainer" class="p-6 bg-white shadow-md border mx-auto mt-2 max-w-6xl w-full">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Mother Card Requests</h2>
+            <div id="motherCardList" class="space-y-4"></div>
+        </div>
+        
+        <script>
+            async function fetchMotherCardRequests() {
+                try {
+                    const response = await fetch('/admin/mothercard_requests');
+                    const data = await response.json();
+                    
+                    populateFilters(data); // Populate filters dynamically
+                    renderRequests(data); // Render mother card requests
+        
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
+            }
+        
+            function populateFilters(data) {
+                const districtFilter = document.getElementById("districtFilter");
+                const talukFilter = document.getElementById("talukFilter");
+        
+                const districts = new Set();
+                const taluks = new Set();
+        
+                data.forEach(request => {
+                    districts.add(request.district);
+                    taluks.add(request.taluk);
+                });
+        
+                // Populate District Filter
+                districtFilter.innerHTML = '<option value="">All</option>';
+                districts.forEach(district => {
+                    districtFilter.innerHTML += `<option value="${district}">${district}</option>`;
+                });
+        
+                // Populate Taluk Filter
+                talukFilter.innerHTML = '<option value="">All</option>';
+                taluks.forEach(taluk => {
+                    talukFilter.innerHTML += `<option value="${taluk}">${taluk}</option>`;
+                });
+            }
+        
+            function renderRequests(data) {
+                const container = document.getElementById("motherCardList");
+                container.innerHTML = "";
+        
+                const selectedStatus = document.getElementById("statusFilter").value;
+                const selectedDistrict = document.getElementById("districtFilter").value;
+                const selectedTaluk = document.getElementById("talukFilter").value;
+        
+                const filteredData = data.filter(request => {
+                    return (selectedStatus === "" || request.status === selectedStatus) &&
+                           (selectedDistrict === "" || request.district === selectedDistrict) &&
+                           (selectedTaluk === "" || request.taluk === selectedTaluk);
+                });
+        
+                filteredData.forEach(request => {
+                    const card = document.createElement("div");
+                    card.className = "p-4 bg-gray-100 shadow-sm border";
+                    
+                    card.innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-700"><strong>Mother Name:</strong> ${request.mother_name}</p>
+                                <p class="text-gray-700"><strong>Husband Name:</strong> ${request.husband_name}</p>
+                                <p class="text-gray-700"><strong>Aadhar Number:</strong> ${request.aadhar_number}</p>
+                                <p class="text-gray-700"><strong>Phone:</strong> ${request.phone_number}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-700"><strong>Email:</strong> ${request.email}</p>
+                                <p class="text-gray-700"><strong>Address:</strong> ${request.address}</p>
+                                <p class="text-gray-700"><strong>Anganwadi Name:</strong> ${request.anganwadi_name}</p>
+                                <p class="text-gray-700"><strong>District:</strong> ${request.district}, ${request.taluk}</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 font-semibold text-gray-900"><strong>Status:</strong> 
+                            <span class="px-2 py-1 text-white ${request.status === 'Pending' ? 'bg-yellow-500' : request.status === 'Approved' ? 'bg-green-500' : 'bg-red-500'}">
+                                ${request.status}
+                            </span>
+                        </p>
+                        
+                        <form class="mt-4 flex flex-col md:flex-row md:items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700">Update Status</label>
+                            <select id="status-${request.id}" class="p-2 border flex-grow">
+                                <option value="Pending" ${request.status === "Pending" ? "selected" : ""}>Pending</option>
+                                <option value="Approved" ${request.status === "Approved" ? "selected" : ""}>Approved</option>
+                                <option value="Rejected" ${request.status === "Rejected" ? "selected" : ""}>Rejected</option>
+                            </select>
+                            <button type="button" onclick="updateStatus(${request.id})" class="bg-blue-600 text-white px-4 py-2">Update</button>
+                        </form>
+                    `;
+        
+                    container.appendChild(card);
+                });
+            }
+        
+            async function updateStatus(id) {
+                const status = document.getElementById(`status-${id}`).value;
+                
+                try {
+                    const response = await fetch(`/api/update_status/${id}`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status }),
+                    });
+                    
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.detail);
+                    
+                    alert("Status updated successfully!");
+                    fetchMotherCardRequests();
+                } catch (error) {
+                    console.error("Error updating status:", error);
+                }
+            }
+
+            
+        
+            // Event listeners for filtering
+            document.getElementById("statusFilter").addEventListener("change", () => fetchMotherCardRequests());
+            document.getElementById("districtFilter").addEventListener("change", () => fetchMotherCardRequests());
+            document.getElementById("talukFilter").addEventListener("change", () => fetchMotherCardRequests());
+        
+            fetchMotherCardRequests();
+        </script>
+        
+        
+        </div>
+
+
+    
+</body>
+</html>

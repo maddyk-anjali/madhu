@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care-One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    {% include "users/nav.html" %}
+    <br>
+    <div class="relative">
+        <img src="static/images/milk4.jpg" alt="Breastfeeding and Bottle Feeding" class="w-full h-96 object-cover">
+        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+            <h1 class="text-white text-4xl font-bold shadow-lg">Feeding Your Baby: A Complete Guide</h1>
+        </div>
+    </div>
+
+    <section class="py-12 container mx-auto px-6 lg:px-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+                <h2 class="text-2xl font-semibold text-blue-700">When to Introduce Solid Foods?</h2>
+                <p class="text-gray-700 mt-2">
+                    Your baby only needs breast milk or infant formula for the first 6 months. At around 6 months, 
+                    you can start to introduce soft, pureed foods. Gradually increase the variety and texture of foods 
+                    as your baby gets used to eating solids.
+                </p>
+            </div>
+
+            <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-green-500">
+                <h2 class="text-2xl font-semibold text-green-700">Top Tips for Feeding Your Baby</h2>
+                <ul class="list-disc ml-5 text-gray-700">
+                    <li>Talk to your doctor or midwife about the best feeding methods.</li>
+                    <li>Breastfeeding is a learned skill for both mother and baby.</li>
+                    <li>Be patient and flexible with feeding techniques.</li>
+                    <li>The important thing is that your baby gets proper nutrition.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-gray-100">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-red-500">
+                <h2 class="text-2xl font-semibold text-red-700">Why Might I Use a Bottle?</h2>
+                <p class="text-gray-700 mt-2">
+                    Breastfeeding is recommended, but sometimes it isn’t possible. Bottle feeding with expressed breast milk (EBM) 
+                    or formula can be an alternative. Some mothers may need to bottle feed due to medical conditions, medication, or other circumstances.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-yellow-500">
+                    <h2 class="text-xl font-semibold text-yellow-700">How to Bottle Feed</h2>
+                    <ul class="list-disc ml-5 text-gray-700">
+                        <li>Unwrap your baby so they can move freely.</li>
+                        <li>Sit comfortably with back support.</li>
+                        <li>Talk gently to your baby while feeding.</li>
+                        <li>Check milk temperature before feeding.</li>
+                        <li>Hold the bottle at an angle to prevent air swallowing.</li>
+                        <li>Watch for hunger and fullness cues.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-purple-500">
+                    <h2 class="text-xl font-semibold text-purple-700">Signs Your Baby is Full</h2>
+                    <p class="text-gray-700 mt-2">
+                        If your baby turns away, becomes fussy, or stops sucking, they may be full. Do not force them to finish a bottle.
+                    </p>
+                </div>
+
+                <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-indigo-500">
+                    <h2 class="text-xl font-semibold text-indigo-700">Cleaning Bottles</h2>
+                    <p class="text-gray-700 mt-2">
+                        All feeding equipment should be properly sterilized before use. It’s recommended to sterilize bottles 
+                        until your baby is 12 months old to prevent infections.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .highlight {
+            background-color: yellow;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+    
+    <div class="controls flex gap-4 items-center p-4 bg-gray-800 rounded-lg shadow-lg fixed bottom-5 right-5 animate-bounce">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/speaker.png" alt="Speaker Icon" id="speaker-icon" class="w-12 h-12 cursor-pointer transition-transform transform hover:scale-110">
+        <button id="play" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">Play</button>
+        <button id="pause" disabled class="px-4 py-2 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition disabled:opacity-50">Pause</button>
+        <button id="resume" disabled class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition disabled:opacity-50">Resume</button>
+        <button id="stop" disabled class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition disabled:opacity-50">Stop</button>
+    </div>
+    
+
+    <script>
+        const playButton = document.getElementById('play');
+        const pauseButton = document.getElementById('pause');
+        const resumeButton = document.getElementById('resume');
+        const stopButton = document.getElementById('stop');
+        const synth = window.speechSynthesis;
+
+        let utterance;
+        let currentElement = null;
+
+        // Function to highlight the currently spoken word
+        function highlightText(element) {
+            // Remove highlight from the previous element
+            if (currentElement) {
+                currentElement.classList.remove('highlight');
+            }
+
+            // Highlight the new element
+            currentElement = element;
+            if (currentElement) {
+                currentElement.classList.add('highlight');
+            }
+        }
+
+        // Function to split content into individual sentences for highlighting
+        function speakContent() {
+            const allText = document.querySelectorAll("h1, h2, p, li"); // Include list items
+            const textArray = Array.from(allText); // Convert NodeList to Array
+            let currentIndex = 0;
+
+            function speakNext() {
+                if (currentIndex < textArray.length) {
+                    const element = textArray[currentIndex];
+                    highlightText(element); // Highlight the element
+                    utterance = new SpeechSynthesisUtterance(element.innerText);
+
+                    utterance.onend = () => {
+                        currentIndex++;
+                        speakNext();
+                    };
+
+                    synth.speak(utterance);
+                } else {
+                    highlightText(null); // Remove highlighting when finished
+                    resetControls();
+                }
+            }
+
+            speakNext();
+        }
+
+        function resetControls() {
+            playButton.disabled = false;
+            pauseButton.disabled = true;
+            resumeButton.disabled = true;
+            stopButton.disabled = true;
+        }
+
+        playButton.addEventListener('click', () => {
+            synth.cancel(); // Stop any ongoing speech
+            playButton.disabled = true;
+            pauseButton.disabled = false;
+            stopButton.disabled = false;
+            speakContent(); // Start reading content
+        });
+
+        pauseButton.addEventListener('click', () => {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                pauseButton.disabled = true;
+                resumeButton.disabled = false;
+            }
+        });
+
+        resumeButton.addEventListener('click', () => {
+            if (synth.paused) {
+                synth.resume();
+                pauseButton.disabled = false;
+                resumeButton.disabled = true;
+            }
+        });
+
+        stopButton.addEventListener('click', () => {
+            synth.cancel();
+            highlightText(null); // Remove highlight
+            resetControls();
+        });
+    </script>
+    {% include "users/footer.html" %}
+
+</body>
+</html>
+

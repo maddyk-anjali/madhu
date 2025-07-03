@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # ---------------- A) ARRAY MANIPULATION, SEARCHING, SORTING, SPLITTING ---------------- #
-
+#1234
 # Creating a NumPy array
 arr = np.array([10, 50, 30, 20, 40])
 print("Original Array:", arr)

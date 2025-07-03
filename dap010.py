@@ -29,7 +29,7 @@ df.set_index('Date', inplace=True)
 # Display the DataFrame
 print("Time Series DataFrame:")
 print(df)
-
+#madhu
 # Plotting the time series data
 plt.figure(figsize=(12, 6))
 for column in ['A', 'B', 'C', 'D']:
